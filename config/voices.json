@@ -1,0 +1,21 @@
+{
+  "default": {
+    "voiceId": "",
+    "name": "설정 필요 — listVoices()로 확인 후 입력",
+    "modelId": "eleven_multilingual_v2"
+  },
+  "channels": {
+    "국뽕": {
+      "voiceId": "",
+      "description": "힘있고 감성적인 남성 목소리"
+    },
+    "건강정보": {
+      "voiceId": "",
+      "description": "차분하고 신뢰감 있는 목소리"
+    },
+    "호기심스토리": {
+      "voiceId": "",
+      "description": "흥미진진한 톤의 내레이터 목소리"
+    }
+  }
+}
