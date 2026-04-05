@@ -1,0 +1,3 @@
+{"type":"server-started","port":58769,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:58769","screen_dir":"/Volumes/P31/Claude/Project/Dripple/.superpowers/brainstorm/42064-1775209973/content","state_dir":"/Volumes/P31/Claude/Project/Dripple/.superpowers/brainstorm/42064-1775209973/state"}
+{"type":"screen-added","file":"/Volumes/P31/Claude/Project/Dripple/.superpowers/brainstorm/42064-1775209973/content/game-flow-screens.html"}
+{"type":"server-stopped","reason":"owner process exited"}

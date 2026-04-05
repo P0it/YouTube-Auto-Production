@@ -1,0 +1,3 @@
+{"type":"server-started","port":61576,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:61576","screen_dir":"/Volumes/P31/Claude/Project/Dripple/.superpowers/brainstorm/44225-1775210503/content","state_dir":"/Volumes/P31/Claude/Project/Dripple/.superpowers/brainstorm/44225-1775210503/state"}
+{"type":"screen-added","file":"/Volumes/P31/Claude/Project/Dripple/.superpowers/brainstorm/44225-1775210503/content/multiplayer-board-v2.html"}
+{"type":"server-stopped","reason":"owner process exited"}

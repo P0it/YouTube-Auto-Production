@@ -1,0 +1,175 @@
+<h2>문장 검증 방식 비교</h2>
+<p class="subtitle">Claude API 과금 vs 대안 — 비용 효율적인 문법 검증 방법</p>
+
+<div class="section" style="margin-bottom: 1.5rem; padding: 1.2rem; background: #fef3c7; border-radius: 12px; border: 1px solid #fde68a;">
+  <p style="color: #92400e; margin: 0; font-size: 14px;">
+    <strong>핵심 관점:</strong> 이 게임의 문장은 <strong>유한한 카드 세트</strong>에서 조합됩니다.
+    GPT/Claude 같은 범용 LLM이 아니라, 더 가볍고 저렴한 방법으로 충분할 수 있습니다.
+  </p>
+</div>
+
+<!-- Cost comparison -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>비용 시뮬레이션 (월 10만 게임 기준)</h3>
+  <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0;">
+    <table style="width:100%; font-size: 13px; border-collapse: collapse;">
+      <tr style="background: #f1f5f9;">
+        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0;">방식</th>
+        <th style="padding: 10px; text-align: right; border-bottom: 2px solid #e2e8f0;">호출당 비용</th>
+        <th style="padding: 10px; text-align: right; border-bottom: 2px solid #e2e8f0;">월 예상 비용</th>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Claude API (Haiku)</td>
+        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0;">~$0.001</td>
+        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0; color: #dc2626;"><strong>~$100+</strong></td>
+      </tr>
+      <tr style="background: #f8fafc;">
+        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">자체 호스팅 소형 모델</td>
+        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0;">~$0.0001</td>
+        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0; color: #f59e0b;"><strong>~$20-50</strong> (서버비)</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">규칙 기반 + NLP 라이브러리</td>
+        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0;">$0</td>
+        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0; color: #16a34a;"><strong>$0</strong> (서버 연산만)</td>
+      </tr>
+      <tr style="background: #f0fdf4;">
+        <td style="padding: 10px;"><strong>하이브리드 (추천)</strong></td>
+        <td style="padding: 10px; text-align: right;">대부분 $0</td>
+        <td style="padding: 10px; text-align: right; color: #16a34a;"><strong>~$5-10</strong></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>규칙 기반 + 패턴 매칭 (추천)</h3>
+      <p style="font-size: 13px; color: #555;">카드가 유한하다는 점을 활용 — LLM 없이 해결</p>
+
+      <div style="background: #f0fdf4; padding: 14px; border-radius: 8px; margin: 10px 0; font-size: 13px;">
+        <strong>원리:</strong><br>
+        카드 세트가 정해져 있으므로, 가능한 문장 패턴을 <strong>사전 정의</strong>할 수 있습니다.<br><br>
+        <code style="background: #dcfce7; padding: 2px 6px; border-radius: 4px;">카드: [I] [like] [cats] [the] [big]</code><br>
+        <code style="background: #dcfce7; padding: 2px 6px; border-radius: 4px;">유효: SVO → "I like cats" ✅</code><br>
+        <code style="background: #dcfce7; padding: 2px 6px; border-radius: 4px;">유효: SVO+Adj → "I like the big cats" ✅</code><br>
+        <code style="background: #fee2e2; padding: 2px 6px; border-radius: 4px;">무효: "cats like I" ❌ (어순 오류)</code>
+      </div>
+
+      <div style="background: #f8fafc; padding: 14px; border-radius: 8px; margin: 10px 0; font-size: 13px;">
+        <strong>구현 방식:</strong><br>
+        1. 각 카드에 <strong>품사 태그</strong> (명사, 동사, 형용사 등)<br>
+        2. <strong>문장 구조 템플릿</strong> 정의 (SVO, SVC, SVOO 등)<br>
+        3. 플레이어 배열이 템플릿에 매칭되는지 검사<br>
+        4. 난이도별로 허용 템플릿 확장
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li><strong>비용 $0</strong> — API 호출 없음</li>
+            <li>즉시 판정 (네트워크 지연 없음)</li>
+            <li>오프라인에서도 동작</li>
+            <li>결정론적 — 같은 입력 항상 같은 결과</li>
+            <li>초급 레벨에 완벽히 적합</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>복잡한 문장(관계절 등)은 패턴이 폭발적으로 증가</li>
+            <li>"문법적으로 맞지만 의미가 이상한 문장" 판별 불가</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>하이브리드: 규칙 기반 + 소형 모델 (백업)</h3>
+      <p style="font-size: 13px; color: #555;">90%는 규칙으로, 10% 애매한 경우만 모델 호출</p>
+
+      <div style="background: #eff6ff; padding: 14px; border-radius: 8px; margin: 10px 0; font-size: 13px;">
+        <strong>2단계 검증:</strong><br><br>
+        <strong>1단계 (로컬/서버):</strong> 품사 기반 규칙 검사<br>
+        → 확실한 정답/오답은 여기서 즉시 판정<br><br>
+        <strong>2단계 (소형 모델):</strong> 애매한 경우만<br>
+        → HuggingFace의 <code>grammar-checker</code> 모델 (서버 호스팅)<br>
+        → 또는 Cloud Functions에서 경량 NLP 처리
+      </div>
+
+      <div style="background: #f8fafc; padding: 14px; border-radius: 8px; margin: 10px 0; font-size: 13px;">
+        <strong>소형 모델 옵션:</strong><br>
+        • <strong>T5-small (grammar correction)</strong> — 242MB, CPU로 충분<br>
+        • <strong>LanguageTool API</strong> — 오픈소스 문법 검사, 무료 셀프호스팅<br>
+        • <strong>spaCy dependency parser</strong> — 문장 구조 분석, 매우 가벼움
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>비용 극소 (대부분 규칙으로 처리)</li>
+            <li>복잡한 문장도 커버 가능</li>
+            <li>고급 레벨로 확장할 때 유연함</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>소형 모델 서버 호스팅 필요 (월 $20-50)</li>
+            <li>2단계 호출 시 약간의 지연</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>로컬 LLM (온디바이스)</h3>
+      <p style="font-size: 13px; color: #555;">HuggingFace 모델을 디바이스에서 직접 실행</p>
+
+      <div style="background: #fef2f2; padding: 14px; border-radius: 8px; margin: 10px 0; font-size: 13px;">
+        <strong>⚠️ 현실적 제약:</strong><br>
+        • 모바일에서 LLM 실행은 <strong>배터리 소모 극심</strong><br>
+        • 최소 500MB~2GB 모델 다운로드 필요<br>
+        • 추론 시간 1~5초 (게임 흐름 방해)<br>
+        • 저사양 기기 지원 불가<br>
+        • 아이들 기기는 대부분 저사양
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>서버 비용 $0</li>
+            <li>오프라인 동작</li>
+            <li>프라이버시</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>모바일 디바이스에서 LLM은 비현실적</li>
+            <li>앱 용량 폭증 (1GB+)</li>
+            <li>배터리/발열 문제</li>
+            <li>타겟이 아이들 — 저사양 기기 많음</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem; padding: 1.5rem; background: #f0fdf4; border-radius: 12px; border: 1px solid #bbf7d0;">
+  <h3 style="color: #166534; margin-top: 0;">💡 추천: A(규칙 기반) 시작 → B(하이브리드)로 확장</h3>
+  <p style="color: #15803d; font-size: 14px;">
+    카드 세트가 유한하다는 것이 핵심입니다. 초급~중급 레벨의 문장은
+    <strong>품사 태그 + 문장 구조 템플릿</strong>으로 100% 판정 가능합니다.
+    고급 레벨에서 복잡한 문장이 등장할 때만 서버의 소형 모델(T5-small 또는 LanguageTool)을 사용하면
+    비용을 월 $5~10 수준으로 유지할 수 있습니다.
+    <br><br>
+    <strong>Claude API는 AI 대전 플레이어 로직에만 사용</strong>하면 과금을 최소화할 수 있습니다.
+  </p>
+</div>

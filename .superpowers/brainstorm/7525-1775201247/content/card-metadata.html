@@ -1,0 +1,175 @@
+<h2>카드 메타데이터 설계 — 규칙 기반 검증의 핵심</h2>
+<p class="subtitle">카드에 충분한 언어 정보를 태깅하면, LLM 없이 문법 검증이 가능합니다</p>
+
+<!-- Card metadata example -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>카드 1장의 데이터 구조</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+    <!-- Visual card -->
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; color: white; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+      <div style="font-size: 11px; opacity: 0.7; margin-bottom: 4px;">NOUN · 3인칭 단수</div>
+      <div style="font-size: 36px; font-weight: bold; margin: 16px 0;">cat</div>
+      <div style="font-size: 13px; opacity: 0.8;">고양이</div>
+      <div style="margin-top: 12px; display: flex; justify-content: center; gap: 6px;">
+        <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px; font-size: 10px;">단수</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px; font-size: 10px;">셀 수 있음</span>
+        <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px; font-size: 10px;">Lv.1</span>
+      </div>
+    </div>
+
+    <!-- Metadata JSON -->
+    <div style="background: #1e293b; border-radius: 16px; padding: 20px; color: #e2e8f0; font-family: monospace; font-size: 12px; line-height: 1.6;">
+      <span style="color: #94a3b8;">// 카드 메타데이터</span><br>
+      {<br>
+      &nbsp;&nbsp;<span style="color: #7dd3fc;">"word"</span>: <span style="color: #86efac;">"cat"</span>,<br>
+      &nbsp;&nbsp;<span style="color: #7dd3fc;">"pos"</span>: <span style="color: #86efac;">"noun"</span>,<br>
+      &nbsp;&nbsp;<span style="color: #7dd3fc;">"number"</span>: <span style="color: #86efac;">"singular"</span>,<br>
+      &nbsp;&nbsp;<span style="color: #7dd3fc;">"person"</span>: <span style="color: #fde68a;">3</span>,<br>
+      &nbsp;&nbsp;<span style="color: #7dd3fc;">"countable"</span>: <span style="color: #fde68a;">true</span>,<br>
+      &nbsp;&nbsp;<span style="color: #7dd3fc;">"vowelStart"</span>: <span style="color: #fde68a;">false</span>,<br>
+      &nbsp;&nbsp;<span style="color: #7dd3fc;">"level"</span>: <span style="color: #fde68a;">1</span>,<br>
+      &nbsp;&nbsp;<span style="color: #7dd3fc;">"meaning_ko"</span>: <span style="color: #86efac;">"고양이"</span><br>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Validation rules -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>검증 규칙 예시</h3>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+
+    <!-- Rule 1: article -->
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border-left: 4px solid #3b82f6;">
+      <strong>규칙 1: 관사 (a / an / the)</strong>
+      <div style="display: flex; gap: 12px; margin-top: 10px;">
+        <div style="flex: 1;">
+          <div style="background: #dcfce7; padding: 10px; border-radius: 8px; text-align: center;">
+            <code><strong>a</strong> + cat</code> ✅<br>
+            <span style="font-size: 11px; color: #666;">다음 단어 vowelStart=false → "a"</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div style="background: #dcfce7; padding: 10px; border-radius: 8px; text-align: center;">
+            <code><strong>an</strong> + apple</code> ✅<br>
+            <span style="font-size: 11px; color: #666;">다음 단어 vowelStart=true → "an"</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div style="background: #fee2e2; padding: 10px; border-radius: 8px; text-align: center;">
+            <code><strong>a</strong> + apple</code> ❌<br>
+            <span style="font-size: 11px; color: #666;">vowelStart=true인데 "a" 사용</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rule 2: subject-verb agreement -->
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border-left: 4px solid #22c55e;">
+      <strong>규칙 2: 주어-동사 수일치</strong>
+      <div style="display: flex; gap: 12px; margin-top: 10px;">
+        <div style="flex: 1;">
+          <div style="background: #dcfce7; padding: 10px; border-radius: 8px; text-align: center;">
+            <code>He <strong>likes</strong> cats</code> ✅<br>
+            <span style="font-size: 11px; color: #666;">3인칭 단수 + likes(3sg)</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div style="background: #dcfce7; padding: 10px; border-radius: 8px; text-align: center;">
+            <code>They <strong>like</strong> cats</code> ✅<br>
+            <span style="font-size: 11px; color: #666;">3인칭 복수 + like(base)</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div style="background: #fee2e2; padding: 10px; border-radius: 8px; text-align: center;">
+            <code>He <strong>like</strong> cats</code> ❌<br>
+            <span style="font-size: 11px; color: #666;">3인칭 단수인데 base form</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rule 3: adjective order -->
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border-left: 4px solid #f59e0b;">
+      <strong>규칙 3: 형용사 어순</strong>
+      <div style="display: flex; gap: 12px; margin-top: 10px;">
+        <div style="flex: 1;">
+          <div style="background: #dcfce7; padding: 10px; border-radius: 8px; text-align: center;">
+            <code><strong>big red</strong> ball</code> ✅<br>
+            <span style="font-size: 11px; color: #666;">크기(1) → 색상(6) 순서 OK</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div style="background: #fef9c3; padding: 10px; border-radius: 8px; text-align: center;">
+            <code><strong>red big</strong> ball</code> ⚠️<br>
+            <span style="font-size: 11px; color: #666;">색상(6) → 크기(1) 어색하지만<br>초급에선 허용할 수도</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size: 12px; color: #666; margin-top: 8px;">
+        영어 형용사 어순: 의견 → 크기 → 나이 → 모양 → 색상 → 출신 → 재질 → 목적<br>
+        각 형용사 카드에 <code>adjOrder: 1~8</code> 태깅
+      </p>
+    </div>
+
+    <!-- Rule 4: plural -->
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border-left: 4px solid #ec4899;">
+      <strong>규칙 4: 단수/복수 일치</strong>
+      <div style="display: flex; gap: 12px; margin-top: 10px;">
+        <div style="flex: 1;">
+          <div style="background: #dcfce7; padding: 10px; border-radius: 8px; text-align: center;">
+            <code><strong>a</strong> cat</code> ✅<br>
+            <span style="font-size: 11px; color: #666;">부정관사 + 단수 OK</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div style="background: #fee2e2; padding: 10px; border-radius: 8px; text-align: center;">
+            <code><strong>a</strong> cats</code> ❌<br>
+            <span style="font-size: 11px; color: #666;">부정관사 + 복수 불가</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div style="background: #dcfce7; padding: 10px; border-radius: 8px; text-align: center;">
+            <code><strong>the</strong> cats</code> ✅<br>
+            <span style="font-size: 11px; color: #666;">정관사 + 복수 OK</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- What rules CAN'T handle -->
+<div class="section" style="margin-bottom: 1.5rem;">
+  <h3>규칙으로 커버가 어려운 경우 (고급 레벨)</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <div style="background: #fef2f2; padding: 14px; border-radius: 10px; border: 1px solid #fecaca;">
+      <strong>의미적 타당성</strong>
+      <p style="font-size: 12px; color: #555; margin: 4px 0 0;">
+        "The chair eats a book" — 문법은 맞지만 의미 이상<br>
+        → <strong>해결:</strong> 카드 세트를 의미적으로 호환되는 그룹으로 구성
+      </p>
+    </div>
+    <div style="background: #fef2f2; padding: 14px; border-radius: 10px; border: 1px solid #fecaca;">
+      <strong>복잡한 절 구조</strong>
+      <p style="font-size: 12px; color: #555; margin: 4px 0 0;">
+        "The cat that I saw yesterday..." — 관계절<br>
+        → <strong>해결:</strong> 고급 레벨에서만 등장, 이때 소형 모델 사용
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding: 1.5rem; background: #f0fdf4; border-radius: 12px; border: 1px solid #bbf7d0;">
+  <h3 style="color: #166534; margin-top: 0;">결론: 규칙 기반이면 충분합니다</h3>
+  <p style="color: #15803d; font-size: 14px;">
+    카드에 <strong>품사, 인칭, 수, 관사호환성, 형용사순서</strong> 등의 메타데이터를 태깅하면,
+    관사/단복수/형용사 어순/주어동사 수일치 등 대부분의 문법 규칙을 LLM 없이 처리할 수 있습니다.
+    <br><br>
+    의미적으로 이상한 문장은 <strong>카드 세트 설계</strong>로 방지하고,
+    관계절 같은 복잡한 구조는 <strong>고급 레벨에서만</strong> 소형 모델로 보완하면 됩니다.
+  </p>
+</div>

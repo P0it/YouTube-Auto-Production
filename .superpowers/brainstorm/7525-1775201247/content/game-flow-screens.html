@@ -1,0 +1,344 @@
+<h2>Dripple — 게임 플로우 & 화면 구성</h2>
+<p class="subtitle">듀오링고 감성의 아기자기한 카드 보드게임</p>
+
+<!-- Flow Overview -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>전체 플로우</h3>
+  <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 16px; background: #f8fafc; border-radius: 12px;">
+    <div style="background: #dbeafe; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">🏠 홈</div>
+    <span style="color: #94a3b8;">→</span>
+    <div style="background: #fce7f3; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">🎮 모드 선택</div>
+    <span style="color: #94a3b8;">→</span>
+    <div style="background: #fef3c7; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">⏳ 매칭/로딩</div>
+    <span style="color: #94a3b8;">→</span>
+    <div style="background: #dcfce7; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 2px solid #86efac;">🃏 게임 보드</div>
+    <span style="color: #94a3b8;">→</span>
+    <div style="background: #e0e7ff; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">🏆 결과</div>
+  </div>
+</div>
+
+<!-- Screen 1: Home -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>1. 홈 화면</h3>
+  <div class="mockup">
+    <div class="mockup-header">홈 — 캐릭터가 살아있는 메인</div>
+    <div class="mockup-body" style="background: linear-gradient(180deg, #a7f3d0 0%, #6ee7b7 30%, #34d399 100%); padding: 30px 20px; text-align: center; min-height: 400px; position: relative;">
+
+      <!-- Logo -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 42px; font-weight: 900; color: white; text-shadow: 0 3px 0 #059669; letter-spacing: -1px;">Dripple</div>
+        <div style="font-size: 13px; color: #065f46; font-weight: 600;">Word Card Battle!</div>
+      </div>
+
+      <!-- Main Character -->
+      <div style="width: 120px; height: 120px; margin: 0 auto 24px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,0.15); border: 4px solid #fff;">
+        <div style="font-size: 60px;">🦊</div>
+      </div>
+      <div style="font-size: 12px; color: #065f46; margin-bottom: 24px;">
+        <em>← Rive 캐릭터: idle 상태에서 눈 깜빡임, 좌우 흔들림</em>
+      </div>
+
+      <!-- Buttons -->
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 260px; margin: 0 auto;">
+        <div style="background: #16a34a; color: white; padding: 16px; border-radius: 16px; font-weight: 700; font-size: 18px; box-shadow: 0 4px 0 #15803d; cursor: pointer;">
+          게임 시작 🎮
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1; background: white; color: #374151; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 0 #d1d5db;">
+            캐릭터 🧸
+          </div>
+          <div style="flex: 1; background: white; color: #374151; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 14px; box-shadow: 0 2px 0 #d1d5db;">
+            설정 ⚙️
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom coins -->
+      <div style="position: absolute; bottom: 12px; right: 16px; background: rgba(255,255,255,0.3); padding: 4px 12px; border-radius: 20px; font-size: 12px; color: #065f46; font-weight: 600;">
+        🪙 1,250
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Screen 2: Mode Selection -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>2. 모드 선택</h3>
+  <div class="mockup">
+    <div class="mockup-header">모드 선택 — 어떻게 플레이할까?</div>
+    <div class="mockup-body" style="background: #f0fdf4; padding: 24px 16px;">
+
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="font-size: 20px; font-weight: 700; color: #166534;">플레이 모드</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- AI Battle -->
+        <div style="background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 2px solid #e5e7eb;">
+          <div style="width: 56px; height: 56px; background: #dbeafe; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🤖</div>
+          <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: 16px; color: #1f2937;">AI 대전</div>
+            <div style="font-size: 12px; color: #6b7280;">혼자서 AI 상대와 카드 배틀</div>
+          </div>
+          <div style="color: #9ca3af; font-size: 20px;">›</div>
+        </div>
+
+        <!-- Online Battle -->
+        <div style="background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 2px solid #86efac;">
+          <div style="width: 56px; height: 56px; background: #dcfce7; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🌍</div>
+          <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: 16px; color: #1f2937;">온라인 대전</div>
+            <div style="font-size: 12px; color: #6b7280;">랜덤 상대와 실시간 매칭</div>
+          </div>
+          <div style="color: #16a34a; font-size: 12px; font-weight: 600;">LIVE</div>
+        </div>
+
+        <!-- Friend Battle -->
+        <div style="background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 2px solid #e5e7eb;">
+          <div style="width: 56px; height: 56px; background: #fce7f3; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px;">👯</div>
+          <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: 16px; color: #1f2937;">친구 대전</div>
+            <div style="font-size: 12px; color: #6b7280;">코드로 친구 초대해서 대전</div>
+          </div>
+          <div style="color: #9ca3af; font-size: 20px;">›</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Screen 3: GAME BOARD — the most important screen -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>3. 게임 보드 (핵심 화면)</h3>
+  <div class="mockup">
+    <div class="mockup-header">게임 보드 — 카드 배틀 진행 중</div>
+    <div class="mockup-body" style="background: linear-gradient(180deg, #1e293b 0%, #334155 100%); padding: 12px; min-height: 520px; position: relative; color: white;">
+
+      <!-- Top: Opponent Area -->
+      <div style="margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+          <!-- Opponent character -->
+          <div style="width: 44px; height: 44px; background: #f472b6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 2px solid #fda4af;">🐱</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 600;">Mimi_cat</div>
+            <div style="font-size: 10px; color: #94a3b8;">카드 5장 남음</div>
+          </div>
+          <!-- Emote bubble -->
+          <div style="margin-left: auto; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 16px; font-size: 18px; position: relative;">
+            😏
+            <div style="font-size: 9px; color: #fbbf24; text-align: center;">약올리기~</div>
+          </div>
+        </div>
+        <!-- Opponent's cards (back side) -->
+        <div style="display: flex; justify-content: center; gap: -4px; margin-bottom: 6px;">
+          <div style="width: 36px; height: 50px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border-radius: 6px; border: 1px solid #8b5cf6; transform: rotate(-8deg); margin-right: -6px;"></div>
+          <div style="width: 36px; height: 50px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border-radius: 6px; border: 1px solid #8b5cf6; transform: rotate(-3deg); margin-right: -6px;"></div>
+          <div style="width: 36px; height: 50px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border-radius: 6px; border: 1px solid #8b5cf6; transform: rotate(0deg); margin-right: -6px;"></div>
+          <div style="width: 36px; height: 50px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border-radius: 6px; border: 1px solid #8b5cf6; transform: rotate(3deg); margin-right: -6px;"></div>
+          <div style="width: 36px; height: 50px; background: linear-gradient(135deg, #7c3aed, #6d28d9); border-radius: 6px; border: 1px solid #8b5cf6; transform: rotate(8deg);"></div>
+        </div>
+      </div>
+
+      <!-- Middle: Sentence Building Zone -->
+      <div style="background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 16px; padding: 14px; margin-bottom: 10px;">
+        <div style="text-align: center; font-size: 10px; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">상대방 문장 영역</div>
+        <div style="display: flex; gap: 6px; justify-content: center; min-height: 46px; align-items: center;">
+          <div style="background: #f472b6; padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; color: white;">The</div>
+          <div style="background: #f472b6; padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; color: white;">big</div>
+          <div style="background: rgba(244,114,182,0.3); padding: 8px 14px; border-radius: 8px; font-size: 14px; border: 2px dashed #f472b6; color: #f9a8d4;">???</div>
+          <div style="background: rgba(244,114,182,0.3); padding: 8px 14px; border-radius: 8px; font-size: 14px; border: 2px dashed #f472b6; color: #f9a8d4;">???</div>
+        </div>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.08); border: 2px solid rgba(74,222,128,0.4); border-radius: 16px; padding: 14px; margin-bottom: 10px;">
+        <div style="text-align: center; font-size: 10px; color: #4ade80; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">내 문장 영역</div>
+        <div style="display: flex; gap: 6px; justify-content: center; min-height: 46px; align-items: center;">
+          <div style="background: #4ade80; padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #052e16;">I</div>
+          <div style="background: #4ade80; padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #052e16;">like</div>
+          <div style="background: #4ade80; padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #052e16;">the</div>
+          <div style="background: rgba(74,222,128,0.2); padding: 8px 14px; border-radius: 8px; font-size: 14px; border: 2px dashed #4ade80; color: #86efac;">???</div>
+        </div>
+      </div>
+
+      <!-- Center: Special Cards / Deck -->
+      <div style="display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 12px;">
+        <!-- Draw pile -->
+        <div style="text-align: center;">
+          <div style="width: 44px; height: 60px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 8px; border: 2px solid #fbbf24; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+            <span style="font-size: 18px;">?</span>
+          </div>
+          <div style="font-size: 9px; color: #94a3b8; margin-top: 4px;">드로우</div>
+        </div>
+        <!-- Turn indicator -->
+        <div style="background: #4ade80; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #052e16;">
+          내 턴! ⏱ 0:23
+        </div>
+        <!-- Submit button -->
+        <div style="text-align: center;">
+          <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid #86efac;">
+            ✓
+          </div>
+          <div style="font-size: 9px; color: #94a3b8; margin-top: 4px;">제출</div>
+        </div>
+      </div>
+
+      <!-- Emote bar -->
+      <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;">
+        <div style="background: rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">😂</div>
+        <div style="background: rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">😤</div>
+        <div style="background: rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">👏</div>
+        <div style="background: rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">😱</div>
+        <div style="background: rgba(255,255,255,0.15); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;">🔥</div>
+      </div>
+
+      <!-- Bottom: My Hand (Fan shape) -->
+      <div style="margin-bottom: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+          <div style="width: 44px; height: 44px; background: #4ade80; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 2px solid #86efac;">🦊</div>
+          <div>
+            <div style="font-size: 13px; font-weight: 600;">나 (Player1)</div>
+            <div style="font-size: 10px; color: #94a3b8;">카드 7장</div>
+          </div>
+        </div>
+        <!-- Fan-shaped hand -->
+        <div style="display: flex; justify-content: center; align-items: flex-end; position: relative; height: 90px; overflow: visible;">
+          <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">
+            <div style="display: flex; align-items: flex-end;">
+              <div style="width: 52px; height: 72px; background: white; border-radius: 8px; border: 2px solid #e5e7eb; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-18deg) translateY(-8px); margin-right: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                <span style="font-size: 8px; color: #9ca3af;">ADJ</span>
+                <span style="font-size: 12px; font-weight: 700; color: #1f2937;">red</span>
+              </div>
+              <div style="width: 52px; height: 72px; background: white; border-radius: 8px; border: 2px solid #e5e7eb; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-10deg) translateY(-4px); margin-right: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                <span style="font-size: 8px; color: #9ca3af;">NOUN</span>
+                <span style="font-size: 12px; font-weight: 700; color: #1f2937;">cat</span>
+              </div>
+              <div style="width: 52px; height: 72px; background: #fef3c7; border-radius: 8px; border: 2px solid #fde68a; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(-3deg) translateY(-1px); margin-right: -8px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); z-index: 2;">
+                <span style="font-size: 8px; color: #f59e0b;">⚡ SKIP</span>
+                <span style="font-size: 10px; font-weight: 700; color: #92400e;">턴 점프</span>
+              </div>
+              <div style="width: 52px; height: 72px; background: white; border-radius: 8px; border: 2px solid #e5e7eb; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(3deg) translateY(-1px); margin-right: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                <span style="font-size: 8px; color: #9ca3af;">NOUN</span>
+                <span style="font-size: 12px; font-weight: 700; color: #1f2937;">dog</span>
+              </div>
+              <div style="width: 52px; height: 72px; background: white; border-radius: 8px; border: 2px solid #e5e7eb; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(10deg) translateY(-4px); margin-right: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                <span style="font-size: 8px; color: #9ca3af;">VERB</span>
+                <span style="font-size: 12px; font-weight: 700; color: #1f2937;">eat</span>
+              </div>
+              <div style="width: 52px; height: 72px; background: #fee2e2; border-radius: 8px; border: 2px solid #fca5a5; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(18deg) translateY(-8px); box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+                <span style="font-size: 8px; color: #ef4444;">🔥 STEAL</span>
+                <span style="font-size: 10px; font-weight: 700; color: #991b1b;">카드 뺏기</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Screen 4: Sentence Judgment Moment -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>4. 문장 판정 순간 (리액션 핵심)</h3>
+  <div class="split" style="gap: 12px;">
+    <!-- Correct -->
+    <div class="mockup" style="flex: 1;">
+      <div class="mockup-header" style="background: #16a34a; color: white;">정답! ✅</div>
+      <div class="mockup-body" style="background: #052e16; padding: 20px; text-align: center; min-height: 180px;">
+        <div style="font-size: 36px; margin-bottom: 8px;">🎉</div>
+        <div style="background: #4ade80; padding: 10px 16px; border-radius: 12px; display: inline-block; margin-bottom: 12px;">
+          <span style="font-size: 16px; font-weight: 700; color: #052e16;">I like the red cat</span>
+        </div>
+        <div style="font-size: 13px; color: #86efac; margin-bottom: 12px;">완벽한 문장! +50점</div>
+        <div style="display: flex; justify-content: center; gap: 16px;">
+          <div style="text-align: center;">
+            <div style="font-size: 28px;">🦊</div>
+            <div style="font-size: 10px; color: #4ade80;">신남!</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 28px;">😿</div>
+            <div style="font-size: 10px; color: #f87171;">억울...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Wrong -->
+    <div class="mockup" style="flex: 1;">
+      <div class="mockup-header" style="background: #dc2626; color: white;">오답! ❌</div>
+      <div class="mockup-body" style="background: #1c1917; padding: 20px; text-align: center; min-height: 180px;">
+        <div style="font-size: 36px; margin-bottom: 8px;">💥</div>
+        <div style="background: #ef4444; padding: 10px 16px; border-radius: 12px; display: inline-block; margin-bottom: 4px; text-decoration: line-through;">
+          <span style="font-size: 16px; font-weight: 700; color: white;">I like a cats</span>
+        </div>
+        <div style="font-size: 11px; color: #fca5a5; margin-bottom: 12px;">a + 복수형(cats) 불가!</div>
+        <div style="display: flex; justify-content: center; gap: 16px;">
+          <div style="text-align: center;">
+            <div style="font-size: 28px;">🦊</div>
+            <div style="font-size: 10px; color: #f87171;">당황...</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 28px;">😹</div>
+            <div style="font-size: 10px; color: #fbbf24;">ㅋㅋㅋ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size: 12px; color: #666; margin-top: 8px; text-align: center;">
+    ← Rive 캐릭터가 정답/오답에 따라 실시간 감정 전환. 상대방도 이모트로 반응 가능 →
+  </p>
+</div>
+
+<!-- Screen 5: Result -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>5. 결과 화면</h3>
+  <div class="mockup">
+    <div class="mockup-header">게임 결과</div>
+    <div class="mockup-body" style="background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%); padding: 30px 20px; text-align: center;">
+      <div style="font-size: 14px; color: #78350f; font-weight: 600; margin-bottom: 4px;">WINNER!</div>
+      <div style="font-size: 60px; margin-bottom: 8px;">🏆</div>
+      <div style="width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">🦊</div>
+      <div style="font-size: 18px; font-weight: 700; color: #78350f;">Player1 승리!</div>
+      <div style="font-size: 28px; font-weight: 900; color: white; text-shadow: 0 2px 0 #d97706; margin: 8px 0;">+150점</div>
+
+      <div style="background: rgba(255,255,255,0.3); border-radius: 12px; padding: 12px; margin: 16px 0; text-align: left; font-size: 13px; color: #78350f;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>완성한 문장</span><strong>4개</strong></div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>사용한 특수 카드</span><strong>2개</strong></div>
+        <div style="display: flex; justify-content: space-between;"><span>연속 정답 보너스</span><strong>x2</strong></div>
+      </div>
+
+      <div style="display: flex; gap: 10px; max-width: 260px; margin: 0 auto;">
+        <div style="flex: 1; background: white; color: #374151; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 15px; box-shadow: 0 3px 0 #d1d5db;">홈으로</div>
+        <div style="flex: 1; background: #16a34a; color: white; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 15px; box-shadow: 0 3px 0 #15803d;">한판 더!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Special Cards -->
+<div class="section">
+  <h3>특수 카드 종류</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
+    <div style="background: #fef3c7; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #fde68a;">
+      <div style="font-size: 24px;">⚡</div>
+      <strong style="font-size: 12px; color: #92400e;">턴 점프</strong>
+      <p style="font-size: 10px; color: #a16207; margin: 4px 0 0;">상대방 턴 스킵</p>
+    </div>
+    <div style="background: #fee2e2; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #fca5a5;">
+      <div style="font-size: 24px;">🔥</div>
+      <strong style="font-size: 12px; color: #991b1b;">카드 뺏기</strong>
+      <p style="font-size: 10px; color: #b91c1c; margin: 4px 0 0;">상대 카드 1장 랜덤 뺏기</p>
+    </div>
+    <div style="background: #e0e7ff; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #a5b4fc;">
+      <div style="font-size: 24px;">🔄</div>
+      <strong style="font-size: 12px; color: #3730a3;">뒤로가기</strong>
+      <p style="font-size: 10px; color: #4338ca; margin: 4px 0 0;">상대 문장에서 카드 1장 회수</p>
+    </div>
+    <div style="background: #f3e8ff; padding: 14px; border-radius: 12px; text-align: center; border: 2px solid #d8b4fe;">
+      <div style="font-size: 24px;">🌟</div>
+      <strong style="font-size: 12px; color: #6b21a8;">와일드카드</strong>
+      <p style="font-size: 10px; color: #7e22ce; margin: 4px 0 0;">아무 품사로 사용 가능</p>
+    </div>
+  </div>
+</div>

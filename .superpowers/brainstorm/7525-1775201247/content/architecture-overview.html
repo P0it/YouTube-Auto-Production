@@ -1,0 +1,113 @@
+<h2>Dripple — 전체 아키텍처 개요</h2>
+<p class="subtitle">Flutter + Flame + Rive | 영어 문장 완성 카드 게임</p>
+
+<!-- System Architecture Diagram -->
+<div class="mockup">
+  <div class="mockup-header">시스템 아키텍처</div>
+  <div class="mockup-body" style="padding: 20px; background: #f8fafc;">
+
+    <!-- Client Layer -->
+    <div style="text-align: center; margin-bottom: 8px;">
+      <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Client (Flutter)</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+      <div style="background: #dbeafe; padding: 14px; border-radius: 10px; text-align: center; border: 2px solid #93c5fd;">
+        <div style="font-size: 20px;">🃏</div>
+        <strong style="font-size: 13px;">Flame Engine</strong>
+        <p style="font-size: 11px; color: #555; margin: 4px 0 0;">게임 보드, 카드 물리<br>부채꼴 핸드, 드래그앤드롭</p>
+      </div>
+      <div style="background: #fce7f3; padding: 14px; border-radius: 10px; text-align: center; border: 2px solid #f9a8d4;">
+        <div style="font-size: 20px;">🧸</div>
+        <strong style="font-size: 13px;">Rive Runtime</strong>
+        <p style="font-size: 11px; color: #555; margin: 4px 0 0;">캐릭터 애니메이션<br>감정 State Machine</p>
+      </div>
+      <div style="background: #e0e7ff; padding: 14px; border-radius: 10px; text-align: center; border: 2px solid #a5b4fc;">
+        <div style="font-size: 20px;">📱</div>
+        <strong style="font-size: 13px;">Flutter UI</strong>
+        <p style="font-size: 11px; color: #555; margin: 4px 0 0;">메뉴, 로비, 매칭<br>설정, 프로필</p>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="text-align: center; margin: 8px 0; color: #94a3b8; font-size: 20px;">⬇ WebSocket / REST ⬇</div>
+
+    <!-- Backend Layer -->
+    <div style="text-align: center; margin-bottom: 8px;">
+      <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Backend</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+      <div style="background: #dcfce7; padding: 14px; border-radius: 10px; text-align: center; border: 2px solid #86efac;">
+        <div style="font-size: 20px;">🔥</div>
+        <strong style="font-size: 13px;">Firebase</strong>
+        <p style="font-size: 11px; color: #555; margin: 4px 0 0;">Auth, Firestore<br>Realtime DB, Functions</p>
+      </div>
+      <div style="background: #fef3c7; padding: 14px; border-radius: 10px; text-align: center; border: 2px solid #fde68a;">
+        <div style="font-size: 20px;">🤖</div>
+        <strong style="font-size: 13px;">Claude API</strong>
+        <p style="font-size: 11px; color: #555; margin: 4px 0 0;">문장 문법 검증<br>AI 플레이어 로직</p>
+      </div>
+      <div style="background: #f3e8ff; padding: 14px; border-radius: 10px; text-align: center; border: 2px solid #d8b4fe;">
+        <div style="font-size: 20px;">📢</div>
+        <strong style="font-size: 13px;">AdMob</strong>
+        <p style="font-size: 11px; color: #555; margin: 4px 0 0;">보상형 광고<br>배너 광고</p>
+      </div>
+    </div>
+
+    <!-- Data Layer -->
+    <div style="text-align: center; margin-bottom: 8px;">
+      <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Data</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div style="background: #fff7ed; padding: 14px; border-radius: 10px; text-align: center; border: 2px solid #fed7aa;">
+        <div style="font-size: 20px;">📦</div>
+        <strong style="font-size: 13px;">단어 카드 DB</strong>
+        <p style="font-size: 11px; color: #555; margin: 4px 0 0;">난이도별 단어 풀<br>품사 태그, 빈도 정보</p>
+      </div>
+      <div style="background: #fff7ed; padding: 14px; border-radius: 10px; text-align: center; border: 2px solid #fed7aa;">
+        <div style="font-size: 20px;">👤</div>
+        <strong style="font-size: 13px;">유저 데이터</strong>
+        <p style="font-size: 11px; color: #555; margin: 4px 0 0;">레벨, 전적, 캐릭터<br>학습 진도, 업적</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key Design Decisions -->
+<div class="section" style="margin-top: 2rem;">
+  <h3>핵심 설계 결정</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border-left: 4px solid #3b82f6;">
+      <strong>게임 루프</strong>
+      <p style="font-size: 13px; color: #555; margin: 6px 0 0;">
+        Flame의 게임 루프가 카드 물리, 애니메이션 타이밍, 턴 관리를 처리.
+        Flutter 위젯 트리와 Flame 게임 월드가 공존.
+      </p>
+    </div>
+
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border-left: 4px solid #ec4899;">
+      <strong>캐릭터 시스템</strong>
+      <p style="font-size: 13px; color: #555; margin: 6px 0 0;">
+        Rive State Machine으로 캐릭터 감정 상태 관리.
+        게임 이벤트(오답, 정답, 카드 뺏기 등)가 트리거.
+      </p>
+    </div>
+
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border-left: 4px solid #22c55e;">
+      <strong>실시간 동기화</strong>
+      <p style="font-size: 13px; color: #555; margin: 6px 0 0;">
+        Firebase Realtime DB로 게임 상태 동기화.
+        턴, 카드 배치, 이모트 이벤트를 실시간 전파.
+      </p>
+    </div>
+
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border-left: 4px solid #f59e0b;">
+      <strong>문장 검증</strong>
+      <p style="font-size: 13px; color: #555; margin: 6px 0 0;">
+        Cloud Functions에서 Claude API 호출로 문법 검증.
+        클라이언트 조작 방지를 위해 서버사이드 판정.
+      </p>
+    </div>
+
+  </div>
+</div>

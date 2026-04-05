@@ -1,0 +1,102 @@
+<h2>기술 스택 접근법 비교</h2>
+<p class="subtitle">영어 단어 카드 게임 "Dripple" — 모바일 + 웹, 실시간 멀티플레이, AI 대전</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>React Native + Expo (추천)</h3>
+      <p><strong>프론트엔드:</strong> React Native (Expo) + React Native Web</p>
+      <p><strong>게임 렌더링:</strong> React Native Reanimated + Gesture Handler (카드 애니메이션)</p>
+      <p><strong>백엔드:</strong> Supabase (Auth, DB, Realtime WebSocket)</p>
+      <p><strong>AI:</strong> Claude API / OpenAI (문장 검증 + AI 대전)</p>
+      <p><strong>광고:</strong> Google AdMob</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>하나의 코드베이스로 iOS + Android + Web 모두 커버</li>
+            <li>React 생태계의 풍부한 라이브러리</li>
+            <li>Expo로 빠른 프로토타이핑 & 빌드</li>
+            <li>Supabase Realtime으로 실시간 대전 구현 용이</li>
+            <li>gstack 워크플로우와 호환성 좋음</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>복잡한 카드 애니메이션에서 네이티브 대비 성능 제한</li>
+            <li>게임 전용 엔진이 아니라서 파티클/이펙트 직접 구현 필요</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Flutter + Flame Engine</h3>
+      <p><strong>프론트엔드:</strong> Flutter (Dart)</p>
+      <p><strong>게임 렌더링:</strong> Flame Engine (2D 게임 엔진, Flutter 네이티브)</p>
+      <p><strong>백엔드:</strong> Firebase (Auth, Firestore, Cloud Functions)</p>
+      <p><strong>AI:</strong> Claude API / OpenAI</p>
+      <p><strong>광고:</strong> Google AdMob (Flutter 플러그인)</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>Flame Engine으로 카드 애니메이션/파티클 효과 강력</li>
+            <li>iOS + Android + Web 모두 지원</li>
+            <li>네이티브급 렌더링 성능 (Skia 엔진)</li>
+            <li>듀오링고 스타일 풍부한 애니메이션 구현에 적합</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>Dart 학습 필요 (JavaScript/TypeScript와 다름)</li>
+            <li>웹 빌드 성능이 모바일 대비 약함</li>
+            <li>gstack과의 호환성 낮음 (JS 생태계 아님)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Next.js + PixiJS (웹 퍼스트)</h3>
+      <p><strong>프론트엔드:</strong> Next.js (React) + Capacitor (모바일 래핑)</p>
+      <p><strong>게임 렌더링:</strong> PixiJS (WebGL 2D 렌더링) + GSAP (애니메이션)</p>
+      <p><strong>백엔드:</strong> Supabase 또는 자체 Node.js + WebSocket</p>
+      <p><strong>AI:</strong> Claude API / OpenAI</p>
+      <p><strong>광고:</strong> Google AdSense (웹) + AdMob (모바일)</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>PixiJS로 게임급 2D 렌더링 (60fps 카드 애니메이션)</li>
+            <li>웹 기술 기반이라 접근성 높음</li>
+            <li>SEO 지원 (Next.js SSR)</li>
+            <li>gstack 워크플로우 완벽 호환</li>
+            <li>Capacitor로 모바일 앱 패키징 가능</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>Capacitor 래핑이 네이티브 앱 대비 UX 약간 떨어짐</li>
+            <li>모바일 디바이스 API 접근 제한적</li>
+            <li>앱스토어 심사에서 웹뷰 앱 거절 위험</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem; padding: 1.5rem; background: #f0fdf4; border-radius: 12px; border: 1px solid #bbf7d0;">
+  <h3 style="color: #166534; margin-top: 0;">💡 추천: Option A — React Native + Expo</h3>
+  <p style="color: #15803d;">
+    카드 게임의 인터랙션(드래그, 스와이프, 부채꼴 배열)은 React Native Reanimated로 충분히 구현 가능하며,
+    Expo의 빠른 빌드 파이프라인과 Supabase Realtime의 WebSocket 지원이
+    AI 대전 + 온라인 실시간 대전 모두를 효율적으로 커버합니다.
+    gstack 워크플로우와도 잘 맞아 개발 생산성이 높습니다.
+  </p>
+</div>

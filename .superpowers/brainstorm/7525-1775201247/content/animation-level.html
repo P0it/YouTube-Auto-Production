@@ -1,0 +1,142 @@
+<h2>캐릭터 애니메이션 수준 비교</h2>
+<p class="subtitle">듀오링고급 캐릭터 = Rive 애니메이션. Unity 없이도 가능합니다.</p>
+
+<div class="section" style="margin-bottom: 1.5rem; padding: 1.2rem; background: #f0fdf4; border-radius: 12px; border: 1px solid #bbf7d0;">
+  <p style="color: #166534; margin: 0; font-size: 14px;">
+    <strong>핵심 사실:</strong> 듀오링고의 캐릭터 애니메이션은 <strong>Rive</strong>로 만들어졌습니다.
+    Rive는 Flutter, React Native, Web 모두 지원하는 인터랙티브 애니메이션 도구입니다.
+    Unity 없이도 듀오링고 수준의 캐릭터 리액션을 구현할 수 있습니다.
+  </p>
+</div>
+
+<!-- Animation level spectrum -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>애니메이션 수준 스펙트럼</h3>
+  <div style="position: relative; background: linear-gradient(to right, #dcfce7, #fef9c3, #fee2e2); border-radius: 12px; padding: 20px; margin-bottom: 8px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <div style="text-align: center; flex: 1;">
+        <div style="font-size: 24px;">😀</div>
+        <strong style="font-size: 12px;">이모지/Lottie</strong>
+        <p style="font-size: 11px; color: #666; margin: 4px 0 0;">미리 만든 애니메이션<br>재생만 가능</p>
+      </div>
+      <div style="text-align: center; flex: 1; position: relative;">
+        <div style="position: absolute; top: -28px; left: 50%; transform: translateX(-50%); background: #16a34a; color: white; padding: 2px 12px; border-radius: 20px; font-size: 11px; white-space: nowrap;">← 여기가 목표 →</div>
+        <div style="font-size: 24px;">🦉</div>
+        <strong style="font-size: 12px;">Rive (듀오링고급)</strong>
+        <p style="font-size: 11px; color: #666; margin: 4px 0 0;">인터랙티브 캐릭터<br>상태에 따라 반응</p>
+      </div>
+      <div style="text-align: center; flex: 1;">
+        <div style="font-size: 24px;">🎮</div>
+        <strong style="font-size: 12px;">Spine/Unity</strong>
+        <p style="font-size: 11px; color: #666; margin: 4px 0 0;">복잡한 뼈대 애니메이션<br>게임 엔진 필요</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- What Rive can do -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>Rive로 구현 가능한 것들</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <div style="background: #f0fdf4; padding: 14px; border-radius: 10px; border: 1px solid #bbf7d0;">
+      <strong>✅ 캐릭터 감정 전환</strong>
+      <p style="font-size: 12px; color: #555; margin: 4px 0 0;">기쁨 → 슬픔 → 약올리기 → 놀람<br>State Machine으로 자연스럽게 전환</p>
+    </div>
+    <div style="background: #f0fdf4; padding: 14px; border-radius: 10px; border: 1px solid #bbf7d0;">
+      <strong>✅ 실시간 리액션</strong>
+      <p style="font-size: 12px; color: #555; margin: 4px 0 0;">상대방 오답 → 내 캐릭터 웃음<br>이벤트 기반으로 즉시 반응</p>
+    </div>
+    <div style="background: #f0fdf4; padding: 14px; border-radius: 10px; border: 1px solid #bbf7d0;">
+      <strong>✅ 터치 인터랙션</strong>
+      <p style="font-size: 12px; color: #555; margin: 4px 0 0;">캐릭터를 탭하면 반응<br>이모트 버튼 누르면 애니메이션 재생</p>
+    </div>
+    <div style="background: #f0fdf4; padding: 14px; border-radius: 10px; border: 1px solid #bbf7d0;">
+      <strong>✅ 다중 캐릭터</strong>
+      <p style="font-size: 12px; color: #555; margin: 4px 0 0;">매칭된 플레이어별 캐릭터 표시<br>각각 독립적 애니메이션 상태</p>
+    </div>
+  </div>
+</div>
+
+<h3>최종 기술 스택 비교 (Rive 기반)</h3>
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Flutter + Flame + Rive (추천)</h3>
+      <p style="font-size: 13px; color: #555;">게임 로직은 Flame, 캐릭터는 Rive, UI는 Flutter</p>
+
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 13px;">
+        <strong>기술 구성:</strong><br>
+        • <strong>게임 보드/카드:</strong> Flame Engine (2D 게임 렌더링)<br>
+        • <strong>캐릭터 애니메이션:</strong> Rive (듀오링고와 동일)<br>
+        • <strong>UI/메뉴:</strong> Flutter 위젯<br>
+        • <strong>실시간 대전:</strong> Firebase Realtime + Cloud Functions<br>
+        • <strong>AI 대전:</strong> Claude API (문장 검증 + AI 플레이어)<br>
+        • <strong>빌드:</strong> iOS + Android + Web
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>Flame(게임) + Rive(캐릭터) + Flutter(UI) 조합이 이 게임에 딱 맞음</li>
+            <li>듀오링고와 동일한 애니메이션 스택</li>
+            <li>하나의 코드베이스로 iOS + Android + Web</li>
+            <li>카드 드래그/부채꼴 배열을 Flame이 자연스럽게 처리</li>
+            <li>Unity보다 훨씬 가벼운 빌드 (10~20MB)</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>Dart 학습 필요 (1~2주면 익숙해짐)</li>
+            <li>Flutter Web은 모바일 대비 약간 무거움</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>React Native + Skia + Rive</h3>
+      <p style="font-size: 13px; color: #555;">카드는 Skia 커스텀 렌더링, 캐릭터는 Rive</p>
+
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin: 10px 0; font-size: 13px;">
+        <strong>기술 구성:</strong><br>
+        • <strong>게임 보드/카드:</strong> React Native Skia + Reanimated<br>
+        • <strong>캐릭터 애니메이션:</strong> Rive (rive-react-native)<br>
+        • <strong>UI/메뉴:</strong> React Native 컴포넌트<br>
+        • <strong>실시간 대전:</strong> Supabase Realtime (WebSocket)<br>
+        • <strong>AI 대전:</strong> Claude API<br>
+        • <strong>빌드:</strong> iOS + Android (+ React Native Web)
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>JavaScript/TypeScript — 학습 부담 적음</li>
+            <li>Rive로 캐릭터 애니메이션 동일하게 가능</li>
+            <li>gstack 워크플로우 호환</li>
+            <li>Expo 생태계의 빠른 개발 사이클</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>Skia로 카드 게임 보드를 직접 구현해야 함 (Flame같은 게임 엔진 없음)</li>
+            <li>부채꼴 카드 배열, 드래그 등을 수동 구현</li>
+            <li>React Native Web은 게임 UI에서 제한적</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem; padding: 1.5rem; background: #eff6ff; border-radius: 12px; border: 1px solid #bfdbfe;">
+  <h3 style="color: #1e40af; margin-top: 0;">🎯 추천: A — Flutter + Flame + Rive</h3>
+  <p style="color: #1e3a8a; font-size: 14px;">
+    <strong>이유:</strong> 듀오링고급 캐릭터 애니메이션(Rive) + 카드 게임 전용 엔진(Flame) + 크로스플랫폼(Flutter)의 조합이 이 프로젝트에 가장 적합합니다.
+    <br><br>
+    React Native도 Rive 캐릭터는 동일하게 구현 가능하지만, <strong>카드 게임 보드 자체</strong>(부채꼴 배열, 드래그앤드롭, 카드 뒤집기 등)를 만들 게임 엔진이 없어 직접 구현해야 합니다. Flame은 이런 2D 게임 로직을 자연스럽게 처리합니다.
+  </p>
+</div>

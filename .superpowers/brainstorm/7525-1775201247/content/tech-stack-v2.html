@@ -1,0 +1,221 @@
+<h2>기술 스택 재비교 — 게임성 중심</h2>
+<p class="subtitle">캐릭터 이모트, 실시간 리액션, 감정 애니메이션을 고려한 스택 비교</p>
+
+<div class="section" style="margin-bottom: 1.5rem; padding: 1rem; background: #fef3c7; border-radius: 12px; border: 1px solid #fde68a;">
+  <p style="color: #92400e; margin: 0;"><strong>핵심 요구사항:</strong> 캐릭터 애니메이션, 이모트 시스템, 실시간 감정표현, 잘못된 문장 제출 시 리액션 — 이건 "앱"이 아니라 "게임"입니다.</p>
+</div>
+
+<!-- Requirement visualization -->
+<div class="section" style="margin-bottom: 2rem;">
+  <h3>구현해야 할 핵심 인터랙션</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0;">
+      <div style="font-size: 28px; margin-bottom: 8px;">🃏</div>
+      <strong>부채꼴 카드 핸드</strong>
+      <p style="font-size: 13px; color: #64748b;">드래그, 스와이프, 회전 애니메이션</p>
+    </div>
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0;">
+      <div style="font-size: 28px; margin-bottom: 8px;">😤😂👏😱</div>
+      <strong>이모트 시스템</strong>
+      <p style="font-size: 13px; color: #64748b;">약올리기, 응원, 놀람 등 실시간 전송</p>
+    </div>
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0;">
+      <div style="font-size: 28px; margin-bottom: 8px;">🧸</div>
+      <strong>캐릭터 애니메이션</strong>
+      <p style="font-size: 13px; color: #64748b;">기쁨, 슬픔, 놀림 등 감정별 모션</p>
+    </div>
+    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0;">
+      <div style="font-size: 28px; margin-bottom: 8px;">❌✨</div>
+      <strong>문장 판정 리액션</strong>
+      <p style="font-size: 13px; color: #64748b;">정답/오답 시 전체 화면 연출 + 캐릭터 반응</p>
+    </div>
+  </div>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>🔥 Unity + WebGL (추천 변경)</h3>
+      <p><strong>게임 엔진:</strong> Unity (C#)</p>
+      <p><strong>애니메이션:</strong> Spine / Unity Animator (캐릭터 뼈대 애니메이션)</p>
+      <p><strong>멀티플레이:</strong> Unity Netcode + Supabase (매칭/인증)</p>
+      <p><strong>빌드:</strong> iOS, Android 네이티브 + WebGL (브라우저)</p>
+      <p><strong>광고:</strong> Unity Ads + AdMob Mediation</p>
+
+      <table style="width:100%; margin: 12px 0; font-size: 13px; border-collapse: collapse;">
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>캐릭터 애니메이션</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐⭐ Spine + Animator 완벽 지원</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>카드 인터랙션</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐⭐ 물리엔진, 파티클 네이티브</td>
+        </tr>
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>이모트 시스템</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐⭐ 이펙트 + 사운드 통합 쉬움</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>실시간 대전</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐ Netcode + WebSocket</td>
+        </tr>
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>웹 지원</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐ WebGL 빌드 가능, 로딩 느림</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>개발 난이도</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐ C# 필요, 러닝커브 있음</td>
+        </tr>
+      </table>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>카드 게임의 모든 요소를 자연스럽게 구현 가능</li>
+            <li>Spine으로 듀오링고급 캐릭터 애니메이션</li>
+            <li>파티클, 이펙트, 사운드 통합이 게임 엔진 답게 강력</li>
+            <li>모바일 + 웹(WebGL) 모두 빌드 가능</li>
+            <li>카드 게임 레퍼런스/에셋 풍부</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>C# 학습 필요</li>
+            <li>WebGL 빌드 초기 로딩이 느릴 수 있음 (5~15초)</li>
+            <li>gstack 워크플로우 직접 호환은 안됨</li>
+            <li>앱 용량이 커질 수 있음 (50MB+)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Flutter + Flame Engine</h3>
+      <p><strong>게임 엔진:</strong> Flame (Flutter 네이티브 2D 게임 엔진)</p>
+      <p><strong>애니메이션:</strong> Rive (인터랙티브 캐릭터 애니메이션)</p>
+      <p><strong>멀티플레이:</strong> Firebase Realtime DB + Cloud Functions</p>
+      <p><strong>빌드:</strong> iOS, Android, Web (Flutter 통합)</p>
+      <p><strong>광고:</strong> Google AdMob (Flutter 플러그인)</p>
+
+      <table style="width:100%; margin: 12px 0; font-size: 13px; border-collapse: collapse;">
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>캐릭터 애니메이션</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐ Rive로 인터랙티브 애니메이션</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>카드 인터랙션</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐ Flame + 제스처 잘 지원</td>
+        </tr>
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>이모트 시스템</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐ Rive 스테이트 머신으로 구현</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>실시간 대전</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐ Firebase Realtime 안정적</td>
+        </tr>
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>웹 지원</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐ Flutter Web은 아직 무거움</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>개발 난이도</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐ Dart 배우기 비교적 쉬움</td>
+        </tr>
+      </table>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>하나의 코드베이스로 모바일 + 웹</li>
+            <li>Rive로 듀오링고급 인터랙티브 캐릭터 가능</li>
+            <li>Flame이 2D 게임에 최적화</li>
+            <li>Unity보다 가볍고 빠른 빌드</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>Dart 학습 필요</li>
+            <li>Flame 생태계가 Unity보다 작음</li>
+            <li>복잡한 이펙트는 직접 구현 필요</li>
+            <li>Flutter Web 성능 아직 제한적</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>React Native + Skia + Lottie</h3>
+      <p><strong>프레임워크:</strong> React Native (Expo)</p>
+      <p><strong>애니메이션:</strong> React Native Skia + Lottie (After Effects 애니메이션)</p>
+      <p><strong>멀티플레이:</strong> Supabase Realtime (WebSocket)</p>
+      <p><strong>빌드:</strong> iOS, Android (네이티브) + React Native Web</p>
+      <p><strong>광고:</strong> Google AdMob</p>
+
+      <table style="width:100%; margin: 12px 0; font-size: 13px; border-collapse: collapse;">
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>캐릭터 애니메이션</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐ Lottie로 가능하나 인터랙티브 제한</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>카드 인터랙션</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐ Reanimated + Gesture Handler</td>
+        </tr>
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>이모트 시스템</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐ Lottie 애니메이션 재생은 가능</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>실시간 대전</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐ Supabase Realtime 좋음</td>
+        </tr>
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>웹 지원</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐ React Native Web 제한적</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;"><strong>개발 난이도</strong></td>
+          <td style="padding: 8px; border: 1px solid #e2e8f0;">⭐⭐⭐⭐⭐ JS/TS 생태계, 가장 쉬움</td>
+        </tr>
+      </table>
+
+      <div class="pros-cons">
+        <div class="pros"><h4>장점</h4>
+          <ul>
+            <li>JavaScript/TypeScript — 가장 익숙한 생태계</li>
+            <li>Skia로 커스텀 2D 렌더링 가능</li>
+            <li>gstack 워크플로우 완벽 호환</li>
+            <li>Expo로 빠른 개발 사이클</li>
+          </ul>
+        </div>
+        <div class="cons"><h4>단점</h4>
+          <ul>
+            <li>캐릭터 "인터랙티브" 애니메이션은 어려움 (Lottie는 재생만)</li>
+            <li>게임 엔진이 아니라 이펙트 구현에 한계</li>
+            <li>복잡한 파티클/이펙트는 Skia로 직접 코딩 필요</li>
+            <li>말씀하신 리액션 시스템 구현 난이도 높음</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem; padding: 1.5rem; background: #eff6ff; border-radius: 12px; border: 1px solid #bfdbfe;">
+  <h3 style="color: #1e40af; margin-top: 0;">🎯 추천 변경: 게임성 중심이면 A(Unity) 또는 B(Flutter+Flame)</h3>
+  <p style="color: #1e3a8a; font-size: 14px;">
+    <strong>캐릭터가 감정표현을 하고, 실시간으로 약올리고, 오답에 리액션하는 것</strong>은
+    게임 엔진의 영역입니다.<br><br>
+    <strong>Unity(A)</strong>는 가장 강력하지만 C# 학습 + 무거운 빌드가 트레이드오프.<br>
+    <strong>Flutter+Flame(B)</strong>은 가볍고 빠르면서도 Rive로 듀오링고급 캐릭터 애니메이션 가능.<br>
+    <strong>React Native(C)</strong>는 개발은 쉽지만 말씀하신 게임성 구현에 한계가 있습니다.
+  </p>
+</div>
