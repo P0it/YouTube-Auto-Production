@@ -1,0 +1,30 @@
+{
+  "name": "youtube",
+  "version": "1.0.0",
+  "license": "ISC",
+  "main": "index.js",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render src/index.ts output.mp4",
+    "check": "tsc --noEmit",
+    "generate": "npx tsx src/scripts/generate-script.ts",
+    "fact-check": "npx tsx src/scripts/fact-check.ts"
+  },
+  "dependencies": {
+    "remotion": "^4.0.0",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/renderer": "^4.0.0",
+    "googleapis": "^118.0.0",
+    "google-trends-api": "^4.9.2",
+    "@elevenlabs/elevenlabs-js": "^2.0.0",
+    "react": "^19.0.0",
+    "ollama": "^0.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.0",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18"
+  }
+}
