@@ -2,3 +2,5 @@ node_modules/
 dist/
 projects/*/output/
 .env
+web/node_modules/
+web/.next/

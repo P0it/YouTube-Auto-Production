@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "npx remotion studio src/remotion/index.ts",
     "render": "npx remotion render src/remotion/index.ts",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit",
+    "generate-script": "npx tsx src/scripts/generate-script.ts",
+    "fact-check": "npx tsx src/scripts/fact-check.ts"
   },
   "keywords": [],
   "author": "",
