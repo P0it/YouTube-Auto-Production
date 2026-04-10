@@ -10,7 +10,8 @@
     "render": "npx remotion render src/remotion/index.ts",
     "build": "tsc --noEmit",
     "generate-script": "npx tsx src/scripts/generate-script.ts",
-    "fact-check": "npx tsx src/scripts/fact-check.ts"
+    "fact-check": "npx tsx src/scripts/fact-check.ts",
+    "research": "npx tsx src/scripts/research.ts"
   },
   "keywords": [],
   "author": "",

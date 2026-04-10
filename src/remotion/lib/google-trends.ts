@@ -9,7 +9,7 @@ export interface TrendResult {
 /** 키워드의 검색 관심도 조회 (최근 30일) */
 export async function getInterestOverTime(
   keyword: string,
-  geo: string = "KR"
+  geo: string = "US"
 ): Promise<number> {
   const results = await googleTrends.interestOverTime({
     keyword,
@@ -31,7 +31,7 @@ export async function getInterestOverTime(
 /** 관련 검색어 조회 */
 export async function getRelatedQueries(
   keyword: string,
-  geo: string = "KR"
+  geo: string = "US"
 ): Promise<string[]> {
   const results = await googleTrends.relatedQueries({
     keyword,
@@ -46,7 +46,7 @@ export async function getRelatedQueries(
 
 /** 일간 인기 검색어 조회 */
 export async function getDailyTrends(
-  geo: string = "KR"
+  geo: string = "US"
 ): Promise<string[]> {
   const results = await googleTrends.dailyTrends({ geo });
   const parsed = JSON.parse(results);

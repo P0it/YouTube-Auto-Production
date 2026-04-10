@@ -29,8 +29,7 @@ export async function searchPopularVideos(
     type: ["video"],
     maxResults,
     order: "viewCount",
-    relevanceLanguage: "ko",
-    regionCode: "KR",
+    relevanceLanguage: "en",
   });
 
   const videoIds =
