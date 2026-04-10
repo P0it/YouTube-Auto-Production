@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ProjectMeta {
   id: string;
@@ -14,9 +16,8 @@ interface ProjectMeta {
 interface TopicCandidate {
   rank: number;
   title: string;
-  point: string;
-  competition: string;
-  youtube: string;
+  description: string;
+  source: string;
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -35,19 +36,18 @@ const STATUS_LABELS: Record<string, string> = {
 // ─── Parse research.md to extract topic list ───
 function parseResearchTopics(content: string): TopicCandidate[] {
   const topics: TopicCandidate[] = [];
-  // Match table rows: | 순위 | 카테고리 | 주제 | 포인트 | 경쟁도 | YouTube |
   const lines = content.split("\n");
   for (const line of lines) {
+    // 새 형식: | # | Topic | Description | Source |
     const match = line.match(
-      /^\|\s*(\d+)\s*\|[^|]+\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|$/
+      /^\|\s*(\d+)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|$/
     );
     if (match) {
       topics.push({
         rank: parseInt(match[1]),
-        title: match[2].trim(),
-        point: match[3].trim(),
-        competition: match[4].trim(),
-        youtube: match[5].trim(),
+        title: match[2].trim().replace(/\\\|/g, "|"),
+        description: match[3].trim().replace(/\\\|/g, "|"),
+        source: match[4].trim(),
       });
     }
   }
@@ -96,6 +96,14 @@ export default function ProjectPage() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // 자동 단계(researching, scripting 등)일 때 5초마다 폴링
+  useEffect(() => {
+    const autoStates = ["researching", "scripting", "verifying", "tts", "editing", "shorts"];
+    if (!meta || !autoStates.includes(meta.status)) return;
+    const interval = setInterval(loadData, 10000);
+    return () => clearInterval(interval);
+  }, [meta?.status, loadData]);
 
   async function updateStatus(status: string, extra?: Record<string, string>) {
     const res = await fetch(`/api/projects/${projectId}`, {
@@ -165,7 +173,7 @@ export default function ProjectPage() {
         >
           &larr; 목록
         </button>
-        <h2 className="text-2xl font-bold">{projectId}</h2>
+        <h2 className="text-2xl font-bold">{decodeURIComponent(projectId)}</h2>
       </div>
       {meta?.theme && (
         <p className="text-sm text-gray-500 mb-1">테마: {meta.theme}</p>
@@ -363,16 +371,13 @@ function TopicSelectionUI({
   }
 
   if (topics.length === 0) {
-    // Fallback: show raw research content
+    // Fallback: render markdown + manual input
     return (
       <div>
         <h3 className="text-lg font-bold mb-4">리서치 결과</h3>
-        <pre className="bg-gray-900 border border-gray-800 rounded p-4 text-sm whitespace-pre-wrap max-h-[500px] overflow-y-auto mb-4">
-          {research}
-        </pre>
-        <p className="text-sm text-gray-500">
-          테이블 형식이 인식되지 않았습니다. 위 내용을 참고하여 주제를 직접 입력하세요.
-        </p>
+        <div className="bg-gray-900 border border-gray-800 rounded p-4 text-sm max-h-[500px] overflow-y-auto mb-4 prose prose-invert prose-sm max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{research}</ReactMarkdown>
+        </div>
         <TopicManualInput onSelect={onSelect} />
       </div>
     );
@@ -390,31 +395,18 @@ function TopicSelectionUI({
             onClick={() => onSelect(topic.title)}
             className="text-left border border-gray-800 rounded-lg p-4 hover:border-blue-500 hover:bg-gray-900 transition-colors"
           >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded">
-                    #{topic.rank}
-                  </span>
-                  <span className="font-medium">{topic.title}</span>
-                </div>
-                <p className="text-sm text-gray-400 mt-1">{topic.point}</p>
-              </div>
-              <div className="text-right ml-4 shrink-0">
-                <span
-                  className={`text-xs px-1.5 py-0.5 rounded ${
-                    topic.competition === "낮음"
-                      ? "bg-green-900 text-green-300"
-                      : topic.competition === "보통" || topic.competition === "중간"
-                        ? "bg-yellow-900 text-yellow-300"
-                        : "bg-red-900 text-red-300"
-                  }`}
-                >
-                  경쟁 {topic.competition}
-                </span>
-              </div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded shrink-0">
+                #{topic.rank}
+              </span>
+              <span className="font-medium">{topic.title}</span>
             </div>
-            <p className="text-xs text-gray-600 mt-2">{topic.youtube}</p>
+            <p className="text-sm text-gray-400 ml-7">{topic.description}</p>
+            <div className="mt-2 ml-7">
+              <span className="text-xs bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded">
+                {topic.source}
+              </span>
+            </div>
           </button>
         ))}
       </div>
@@ -707,9 +699,9 @@ function FilePreview({ title, content }: { title: string; content: string }) {
   return (
     <div>
       <h4 className="text-xs font-medium text-gray-500 mb-1">{title}</h4>
-      <pre className="bg-gray-900 border border-gray-800 rounded p-3 text-xs whitespace-pre-wrap max-h-[300px] overflow-y-auto">
-        {content}
-      </pre>
+      <div className="bg-gray-900 border border-gray-800 rounded p-3 text-xs max-h-[300px] overflow-y-auto prose prose-invert prose-xs max-w-none">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      </div>
     </div>
   );
 }

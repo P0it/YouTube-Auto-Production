@@ -73,7 +73,15 @@ export default function Home() {
     });
 
     if (res.ok) {
-      window.location.href = `/project/${newId.trim()}`;
+      const data = await res.json();
+      window.location.href = `/project/${data.meta.id}`;
+    }
+  }
+
+  async function deleteProject(id: string) {
+    const res = await fetch(`/api/projects/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setProjects((prev) => prev.filter((p) => p.id !== id));
     }
   }
 
@@ -99,7 +107,6 @@ export default function Home() {
             onChange={(e) => setNewId(e.target.value)}
             placeholder="프로젝트 ID (예: blue-zone-story)"
             className="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-            pattern="[a-zA-Z0-9_-]+"
             required
           />
           <input
@@ -126,7 +133,7 @@ export default function Home() {
           </h2>
           <div className="grid gap-3">
             {needsAction.map((p) => (
-              <ProjectCard key={p.id} project={p} />
+              <ProjectCard key={p.id} project={p} onDelete={deleteProject} />
             ))}
           </div>
         </section>
@@ -138,7 +145,7 @@ export default function Home() {
           <h2 className="text-lg font-bold mb-3">진행 중</h2>
           <div className="grid gap-3">
             {inProgress.map((p) => (
-              <ProjectCard key={p.id} project={p} />
+              <ProjectCard key={p.id} project={p} onDelete={deleteProject} />
             ))}
           </div>
         </section>
@@ -150,7 +157,7 @@ export default function Home() {
           <h2 className="text-lg font-bold mb-3 text-gray-500">완료</h2>
           <div className="grid gap-3">
             {completed.map((p) => (
-              <ProjectCard key={p.id} project={p} />
+              <ProjectCard key={p.id} project={p} onDelete={deleteProject} />
             ))}
           </div>
         </section>
@@ -186,7 +193,13 @@ export default function Home() {
   );
 }
 
-function ProjectCard({ project }: { project: ProjectInfo }) {
+function ProjectCard({
+  project,
+  onDelete,
+}: {
+  project: ProjectInfo;
+  onDelete: (id: string) => void;
+}) {
   const status = STATUS_CONFIG[project.meta?.status ?? ""] ?? {
     label: "알 수 없음",
     color: "bg-gray-800 text-gray-400",
@@ -194,27 +207,38 @@ function ProjectCard({ project }: { project: ProjectInfo }) {
   };
 
   return (
-    <Link
-      href={`/project/${project.id}`}
-      className="block border border-gray-800 rounded-lg p-4 hover:border-gray-600 transition-colors"
-    >
-      <div className="flex items-center justify-between">
-        <div>
-          <span className="font-medium text-lg">{project.id}</span>
-          {project.meta?.topic && (
-            <span className="ml-3 text-sm text-gray-400">
-              {project.meta.topic}
-            </span>
-          )}
+    <div className="relative border border-gray-800 rounded-lg p-4 hover:border-gray-600 transition-colors">
+      <Link href={`/project/${project.id}`} className="block">
+        <div className="flex items-center justify-between pr-8">
+          <div>
+            <span className="font-medium text-lg">{decodeURIComponent(project.id)}</span>
+            {project.meta?.topic && (
+              <span className="ml-3 text-sm text-gray-400">
+                {project.meta.topic}
+              </span>
+            )}
+          </div>
+          <span className={`text-xs px-2 py-1 rounded ${status.color}`}>
+            {status.label}
+          </span>
         </div>
-        <span className={`text-xs px-2 py-1 rounded ${status.color}`}>
-          {status.label}
-        </span>
-      </div>
-      {project.meta?.theme && (
-        <div className="text-xs text-gray-600 mt-1">테마: {project.meta.theme}</div>
-      )}
-      <ProgressBar step={status.step} />
-    </Link>
+        {project.meta?.theme && (
+          <div className="text-xs text-gray-600 mt-1">테마: {project.meta.theme}</div>
+        )}
+        <ProgressBar step={status.step} />
+      </Link>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          if (confirm(`"${decodeURIComponent(project.id)}" 프로젝트를 삭제하시겠습니까?`)) {
+            onDelete(project.id);
+          }
+        }}
+        className="absolute top-3 right-3 text-gray-700 hover:text-red-400 transition-colors"
+        title="삭제"
+      >
+        &times;
+      </button>
+    </div>
   );
 }

@@ -76,6 +76,22 @@ export async function GET(
   return NextResponse.json({ content });
 }
 
+// DELETE: Remove project
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const projectDir = getProjectDir(id);
+
+  if (!fs.existsSync(projectDir)) {
+    return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
+
+  fs.rmSync(projectDir, { recursive: true, force: true });
+  return NextResponse.json({ ok: true });
+}
+
 // PUT: Update file or pipeline status
 export async function PUT(
   request: NextRequest,
