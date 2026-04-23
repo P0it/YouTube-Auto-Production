@@ -1,9 +1,27 @@
-import type { Script, ScriptPart, SubtitleEntry, AudioSegment } from "./types";
+import type {
+  Script,
+  ScriptPart,
+  SectionType,
+  SubtitleEntry,
+  AudioSegment,
+} from "./types";
 import * as fs from "fs";
 
-/**
- * 마크다운 형식의 대본 파일을 파싱하여 Script 객체로 변환
- */
+/** 7파트 구조 고정 매핑 — scriptwriter 에이전트의 템플릿과 일치해야 한다 */
+const PART_SECTION_MAP: Record<number, SectionType> = {
+  1: "hook",
+  2: "framing",
+  3: "analysis",
+  4: "cases",
+  5: "deep",
+  6: "synthesis",
+  7: "outro",
+};
+
+export function sectionTypeForPart(partNumber: number): SectionType {
+  return PART_SECTION_MAP[partNumber] ?? "deep";
+}
+
 export function parseScript(filePath: string, projectId: string): Script {
   const content = fs.readFileSync(filePath, "utf-8");
   const lines = content.split("\n");
@@ -14,6 +32,7 @@ export function parseScript(filePath: string, projectId: string): Script {
   let narrationLines: string[] = [];
   let visualDirections: string[] = [];
   let highlightWords: string[] = [];
+  let sources: string[] = [];
 
   for (const line of lines) {
     const topicMatch = line.match(/^#\s+주제:\s*(.+)/);
@@ -28,7 +47,7 @@ export function parseScript(filePath: string, projectId: string): Script {
     if (partMatch) {
       if (currentPart) {
         parts.push(
-          finalizePart(currentPart, narrationLines, visualDirections, highlightWords)
+          finalizePart(currentPart, narrationLines, visualDirections, highlightWords, sources)
         );
       }
       currentPart = {
@@ -40,13 +59,18 @@ export function parseScript(filePath: string, projectId: string): Script {
       narrationLines = [];
       visualDirections = [];
       highlightWords = [];
+      sources = [];
       continue;
     }
 
     const visualMatch = line.match(/\[영상\s*지시:\s*(.+?)\]/);
     if (visualMatch) {
       visualDirections.push(visualMatch[1].trim());
-      continue;
+    }
+
+    const sourceMatches = line.matchAll(/\[출처:\s*(.+?)\]/g);
+    for (const m of sourceMatches) {
+      sources.push(m[1].trim());
     }
 
     const boldMatches = line.matchAll(/\*\*(.+?)\*\*/g);
@@ -56,13 +80,20 @@ export function parseScript(filePath: string, projectId: string): Script {
 
     const trimmed = line.trim();
     if (trimmed && !trimmed.startsWith("#") && !trimmed.startsWith("[")) {
-      narrationLines.push(trimmed.replace(/\*\*(.+?)\*\*/g, "$1"));
+      narrationLines.push(
+        trimmed
+          .replace(/\*\*(.+?)\*\*/g, "$1")
+          .replace(/\[영상\s*지시:\s*.+?\]/g, "")
+          .replace(/\[출처:\s*.+?\]/g, "")
+          .replace(/\s+/g, " ")
+          .trim()
+      );
     }
   }
 
   if (currentPart) {
     parts.push(
-      finalizePart(currentPart, narrationLines, visualDirections, highlightWords)
+      finalizePart(currentPart, narrationLines, visualDirections, highlightWords, sources)
     );
   }
 
@@ -76,20 +107,23 @@ function finalizePart(
   partial: Partial<ScriptPart>,
   narrationLines: string[],
   visualDirections: string[],
-  highlightWords: string[]
+  highlightWords: string[],
+  sources: string[]
 ): ScriptPart {
+  const partNumber = partial.partNumber ?? 0;
   return {
-    partNumber: partial.partNumber ?? 0,
+    partNumber,
     partName: partial.partName ?? "",
     startTime: partial.startTime ?? "0:00",
     endTime: partial.endTime ?? "0:00",
-    narration: narrationLines.join(" "),
+    narration: narrationLines.filter(Boolean).join(" "),
     visualDirections,
     highlightWords,
+    sectionType: sectionTypeForPart(partNumber),
+    sources,
   };
 }
 
-/** 대본에서 자막 엔트리 생성 (TTS 타이밍 기반) */
 export function generateSubtitles(
   script: Script,
   audioSegments: AudioSegment[]
@@ -102,7 +136,7 @@ export function generateSubtitles(
     if (!part) continue;
 
     const words = part.narration.split(/\s+/);
-    const msPerWord = segment.durationMs / words.length;
+    const msPerWord = segment.durationMs / Math.max(words.length, 1);
 
     for (let i = 0; i < words.length; i++) {
       const word = words[i];

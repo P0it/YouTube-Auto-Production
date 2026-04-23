@@ -1,6 +1,10 @@
 node_modules/
 dist/
 projects/*/output/
+projects/test*
+projects/testbed/
 .env
 web/node_modules/
 web/.next/
+web/tsconfig.tsbuildinfo
+data/

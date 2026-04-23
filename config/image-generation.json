@@ -1,0 +1,10 @@
+{
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-image-preview",
+  "longformAspectRatio": "16:9",
+  "shortformAspectRatio": "9:16",
+  "imageSize": "2K",
+  "concurrency": 6,
+  "brandGuideline": "sober, contemplative mood; muted cinematic palette; no on-image text, no watermarks, no copyrighted characters or real-world public figures",
+  "negative": "text, watermark, logo, captions, subtitles, ui elements, overlays, deformed hands, extra fingers"
+}

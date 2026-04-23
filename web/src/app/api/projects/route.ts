@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as fs from "fs";
 import * as path from "path";
-import { spawn } from "child_process";
+import { STAGE_RUNNERS } from "@/lib/pipeline-stages";
+import { validateResearch } from "@/lib/research-validator";
+import { updateProgress } from "@/lib/spawn-helper";
 
 const PROJECTS_DIR = path.resolve(process.cwd(), "..", "projects");
+
+export type ProjectLanguage = "ko" | "en";
 
 export interface ProjectMeta {
   id: string;
   theme: string;
   topic: string;
+  language: ProjectLanguage;
   createdAt: string;
   status:
     | "researching"
@@ -16,6 +21,8 @@ export interface ProjectMeta {
     | "scripting"
     | "verifying"
     | "script_approval"
+    | "image_generation"
+    | "video_clips"
     | "asset_check"
     | "tts"
     | "editing"
@@ -27,6 +34,14 @@ function readMeta(projectDir: string): ProjectMeta | null {
   const metaPath = path.join(projectDir, "meta.json");
   if (!fs.existsSync(metaPath)) return null;
   return JSON.parse(fs.readFileSync(metaPath, "utf-8"));
+}
+
+function writeMeta(projectDir: string, meta: ProjectMeta) {
+  fs.writeFileSync(
+    path.join(projectDir, "meta.json"),
+    JSON.stringify(meta, null, 2),
+    "utf-8"
+  );
 }
 
 export async function GET() {
@@ -43,14 +58,16 @@ export async function GET() {
         .readdirSync(projectPath)
         .filter((f) => !fs.statSync(path.join(projectPath, f)).isDirectory());
       const meta = readMeta(projectPath);
+      const research = validateResearch(d.name);
       return {
         id: d.name,
         files,
         meta,
+        researchReady: research.ready,
+        topicCount: research.topicCount,
       };
     })
     .sort((a, b) => {
-      // Sort by createdAt descending (newest first)
       const aTime = a.meta?.createdAt ?? "0";
       const bTime = b.meta?.createdAt ?? "0";
       return bTime.localeCompare(aTime);
@@ -61,13 +78,16 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { id, theme } = body;
+  const { id, theme, language } = body as {
+    id?: string;
+    theme?: string;
+    language?: ProjectLanguage;
+  };
 
   if (!id || !id.trim()) {
     return NextResponse.json({ error: "Project ID is required" }, { status: 400 });
   }
 
-  // 디렉토리명으로 사용할 slug 생성 (공백→하이픈, 특수문자 제거)
   const slug = id
     .trim()
     .replace(/\s+/g, "-")
@@ -82,48 +102,70 @@ export async function POST(request: NextRequest) {
     fs.mkdirSync(projectDir, { recursive: true });
   }
 
-  // Create meta.json
+  const effectiveLanguage: ProjectLanguage = language === "en" ? "en" : "ko";
+
   const meta: ProjectMeta = {
     id: slug,
     theme: theme || "",
     topic: "",
+    language: effectiveLanguage,
     createdAt: new Date().toISOString(),
     status: "researching",
   };
+  writeMeta(projectDir, meta);
 
-  fs.writeFileSync(
-    path.join(projectDir, "meta.json"),
-    JSON.stringify(meta, null, 2),
-    "utf-8"
-  );
+  // Raw data collection (YouTube EN + Google Trends KR) — short, then hand off
+  // to the researcher-planner subagent for Korean topic curation.
+  STAGE_RUNNERS.researchRaw.run({
+    projectId: slug,
+    projectDir,
+    meta,
+    onExit: (rawCode) => {
+      if (rawCode !== 0) return;
+      const latest = readMeta(projectDir);
+      if (!latest) return;
 
-  // 리서치 스크립트 백그라운드 실행
-  const rootDir = path.resolve(process.cwd(), "..");
-  const scriptPath = path.join(rootDir, "src", "scripts", "research.ts");
+      STAGE_RUNNERS.researchCurate.run({
+        projectId: slug,
+        projectDir,
+        meta: latest,
+        onExit: (curateCode) => {
+          const m = readMeta(projectDir);
+          if (!m) return;
 
-  const args = ["tsx", scriptPath, "--project", slug];
-  if (theme) {
-    args.push("--theme", theme);
-  }
+          const validation = validateResearch(slug);
 
-  const child = spawn("npx", args, {
-    cwd: rootDir,
-    stdio: "ignore",
-    detached: true,
-    shell: true,
+          // Claude exited 0 but the file is still a placeholder → CLI was
+          // probably not authenticated or never actually called the subagent.
+          if (curateCode === 0 && !validation.ready) {
+            updateProgress(projectDir, (r) => ({
+              ...r,
+              crashed: true,
+              tail: [
+                ...r.tail,
+                `[validate] research.md is not ready (placeholder=${validation.isPlaceholder}, topicCount=${validation.topicCount}). Keeping status=researching. Check: claude CLI installed & logged in?`,
+              ].slice(-200),
+            }));
+            return;
+          }
+
+          if (curateCode !== 0) {
+            updateProgress(projectDir, (r) => ({
+              ...r,
+              crashed: true,
+              tail: [...r.tail, `[validate] claude -p exited ${curateCode}`].slice(-200),
+            }));
+            return;
+          }
+
+          if (validation.ready && m.status === "researching") {
+            m.status = "topic_selection";
+            writeMeta(projectDir, m);
+          }
+        },
+      });
+    },
   });
-
-  child.on("exit", (code) => {
-    // 스크립트 완료 후 status를 topic_selection으로 변경
-    const metaPath = path.join(projectDir, "meta.json");
-    if (fs.existsSync(metaPath)) {
-      const updatedMeta = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
-      updatedMeta.status = code === 0 ? "topic_selection" : "researching";
-      fs.writeFileSync(metaPath, JSON.stringify(updatedMeta, null, 2), "utf-8");
-    }
-  });
-
-  child.unref();
 
   return NextResponse.json({ ok: true, meta });
 }

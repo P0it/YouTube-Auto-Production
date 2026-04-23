@@ -1,0 +1,17 @@
+{
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-tts-preview",
+  "voiceName": "Achernar",
+  "stylePreamble": "다음 텍스트를 차분하고 사색적인 톤으로, 철학 다큐멘터리의 내레이터처럼 또박또박 읽어주세요. 감정을 과장하지 말고, 문장 사이에 자연스러운 호흡을 두세요.",
+  "sampleRateHz": 24000,
+  "channels": 1,
+  "bitDepth": 16,
+  "voiceCandidates": {
+    "Achernar": "soft, calm narrator",
+    "Umbriel": "easy-going",
+    "Despina": "smooth",
+    "Algieba": "smooth, contemplative",
+    "Charon": "informative, steady",
+    "Schedar": "even, neutral"
+  }
+}

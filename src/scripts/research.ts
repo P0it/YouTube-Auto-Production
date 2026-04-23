@@ -3,202 +3,248 @@ import * as path from "path";
 import { searchPopularVideos } from "../remotion/lib/youtube-api";
 import { getDailyTrends, getRelatedQueries } from "../remotion/lib/google-trends";
 
-interface TopicCandidate {
+type Language = "ko" | "en";
+
+/**
+ * Raw-data collector for the researcher-planner subagent.
+ *
+ * IMPORTANT — anti-copy policy:
+ * We intentionally do NOT collect Korean YouTube video titles as topic
+ * candidates. Korean viewers would recognize the source and it would amount
+ * to title-cloning. Instead we pull:
+ *   (a) English academic/philosophical/psychological video titles for
+ *       *inspiration* only (foreign context the Korean audience doesn't see),
+ *   (b) Korean Google Trends — as a *cultural context signal* for what
+ *       Korean viewers are thinking about this month, NOT as topics.
+ *
+ * The researcher-planner subagent is responsible for combining these
+ * signals into ORIGINAL Korean topic angles that reference foreign academic
+ * grounding.
+ */
+
+interface ForeignVideoReference {
   title: string;
-  description: string;
-  source: "youtube" | "trends" | "llm";
+  channelTitle: string;
+  viewCount: number;
+  url: string;
+  publishedAt: string;
+}
+
+interface KoreanTrendSignal {
+  query: string;
+  kind: "daily" | "related";
 }
 
 interface ResearchResult {
   mode: "theme" | "auto";
   theme?: string;
-  candidates: TopicCandidate[];
+  language: Language;
+  /** English-only video references — inspiration, never a direct topic source. */
+  foreignReferences: ForeignVideoReference[];
+  /** Korean cultural context signals — what Korean audience is thinking about. */
+  koreanContext: KoreanTrendSignal[];
+  notesForPlanner: string;
   timestamp: string;
 }
 
-function parseArgs(): { theme?: string; project?: string } {
+function parseArgs(): { theme?: string; project?: string; language: Language } {
   const args = process.argv.slice(2);
   let theme: string | undefined;
   let project: string | undefined;
+  let language: Language = "ko";
 
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === "--theme" && args[i + 1]) {
-      theme = args[++i];
-    } else if (args[i] === "--project" && args[i + 1]) {
-      project = args[++i];
+    if (args[i] === "--theme" && args[i + 1]) theme = args[++i];
+    else if (args[i] === "--project" && args[i + 1]) project = args[++i];
+    else if (args[i] === "--language" && args[i + 1]) {
+      const v = args[++i];
+      if (v === "ko" || v === "en") language = v;
     }
   }
 
-  return { theme, project };
+  return { theme, project, language };
 }
 
-/** 테마 있을 때: LLM이 주제를 생성하고 YouTube API로 포화 체크 */
-async function researchWithTheme(theme: string): Promise<TopicCandidate[]> {
-  console.log(`Searching YouTube for "${theme}"...`);
+/**
+ * English-only philosophy/psychology seeds. These pull *foreign* academic
+ * video references the Korean audience never sees — safe for inspiration.
+ */
+const ENGLISH_SEEDS = [
+  "classic psychology experiment explained",
+  "philosophy of everyday life",
+  "cognitive bias illustrated",
+  "phenomenology introduction",
+  "existential psychology",
+  "moral philosophy thought experiment",
+  "social psychology famous study",
+  "academy of ideas",
+  "the school of life philosophy",
+];
 
-  // YouTube에서 해당 테마의 인기 영상 가져오기
-  const videos = await searchPopularVideos(theme, 15);
+async function collectForeignReferences(
+  themeOrNull: string | undefined
+): Promise<ForeignVideoReference[]> {
+  const out: ForeignVideoReference[] = [];
+  const queries = themeOrNull
+    ? [translateThemeToEnglishHeuristic(themeOrNull), ...ENGLISH_SEEDS.slice(0, 5)]
+    : ENGLISH_SEEDS;
 
-  const candidates: TopicCandidate[] = [];
-
-  // 인기 영상 제목에서 주제 패턴 추출
-  for (const video of videos) {
-    const cleaned = cleanTitle(video.title);
-    if (!cleaned) continue;
-    candidates.push({
-      title: cleaned,
-      description: `${video.channelTitle} · 조회수 ${formatViewCount(video.viewCount)} · ${formatDate(video.publishedAt)}`,
-      source: "youtube",
-    });
-  }
-
-  // 관련 검색어도 가져오기
-  console.log(`Fetching related queries for "${theme}"...`);
-  try {
-    const relatedQueries = await getRelatedQueries(theme);
-    for (const query of relatedQueries.slice(0, 5)) {
-      candidates.push({
-        title: cleanTitle(query),
-        description: `"${theme}" 관련 급상승 검색어`,
-        source: "trends",
-      });
-    }
-  } catch (err) {
-    console.warn("Google Trends related queries failed, skipping.");
-  }
-
-  return candidates;
-}
-
-/** 테마 없을 때: Google Trends 일간 트렌드 + YouTube 인기 영상 */
-async function researchAuto(): Promise<TopicCandidate[]> {
-  console.log("Auto-discovering today's trends...");
-
-  const candidates: TopicCandidate[] = [];
-
-  // Google Trends daily trending searches
-  console.log("Fetching Google Trends daily searches...");
-  try {
-    const dailyTrends = await getDailyTrends();
-    for (const trend of dailyTrends.slice(0, 10)) {
-      candidates.push({
-        title: trend,
-        description: "오늘의 Google 인기 검색어",
-        source: "trends",
-      });
-    }
-  } catch (err) {
-    console.warn("Google Trends failed, using YouTube only.");
-  }
-
-  // YouTube trending keyword searches
-  const trendingKeywords = ["viral", "shocking", "mind blowing", "you won't believe"];
-  for (const keyword of trendingKeywords) {
-    console.log(`Searching YouTube for "${keyword}"...`);
+  for (const q of queries) {
+    console.log(`Searching YouTube (EN-only) for "${q}"...`);
     try {
-      const videos = await searchPopularVideos(keyword, 5);
-      for (const video of videos) {
-        candidates.push({
-          title: cleanTitle(video.title),
-          description: `${video.channelTitle} · 조회수 ${formatViewCount(video.viewCount)}`,
-          source: "youtube",
+      const videos = await searchPopularVideos(q, 5);
+      for (const v of videos) {
+        out.push({
+          title: cleanTitle(v.title),
+          channelTitle: v.channelTitle,
+          viewCount: v.viewCount,
+          url: v.url,
+          publishedAt: v.publishedAt,
         });
       }
-    } catch (err) {
-      console.warn(`"${keyword}" search failed, skipping.`);
+    } catch {
+      console.warn(`"${q}" search failed, skipping.`);
     }
   }
 
-  return candidates;
+  return dedupeByTitle(out);
 }
 
-/** 제목에서 이모지, 해시태그, 과도한 공백 제거 */
+async function collectKoreanContext(theme: string | undefined): Promise<KoreanTrendSignal[]> {
+  const signals: KoreanTrendSignal[] = [];
+  try {
+    const daily = await getDailyTrends();
+    for (const q of daily.slice(0, 6)) {
+      signals.push({ query: q, kind: "daily" });
+    }
+  } catch {
+    console.warn("Google Trends daily failed, skipping.");
+  }
+
+  if (theme) {
+    try {
+      const related = await getRelatedQueries(theme);
+      for (const q of related.slice(0, 6)) {
+        signals.push({ query: q, kind: "related" });
+      }
+    } catch {
+      console.warn("Google Trends related failed, skipping.");
+    }
+  }
+
+  return signals;
+}
+
+/**
+ * Very rough best-effort mapping of a Korean theme string to an English
+ * search phrase. This is intentionally light — the planner agent does the
+ * real translation/interpretation. We just pick a few academic probes.
+ */
+function translateThemeToEnglishHeuristic(theme: string): string {
+  return `${theme} psychology philosophy study`;
+}
+
 function cleanTitle(title: string): string {
   return title
-    // 이모지 제거
-    .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, "")
-    // 해시태그 제거
+    .replace(
+      /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu,
+      ""
+    )
     .replace(/#\S+/g, "")
-    // 여러 공백을 하나로
     .replace(/\s+/g, " ")
     .trim();
 }
 
-function formatViewCount(count: number): string {
-  if (count >= 1_000_000_000) return `${(count / 1_000_000_000).toFixed(1)}B`;
-  if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1)}M`;
-  if (count >= 1_000) return `${(count / 1_000).toFixed(1)}K`;
-  return `${count}`;
+function dedupeByTitle(refs: ForeignVideoReference[]): ForeignVideoReference[] {
+  const seen = new Set<string>();
+  const out: ForeignVideoReference[] = [];
+  for (const r of refs) {
+    const key = r.title.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(r);
+  }
+  return out;
 }
 
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return "오늘";
-  if (diffDays === 1) return "어제";
-  if (diffDays < 7) return `${diffDays}일 전`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}주 전`;
-  if (diffDays < 365) return `${Math.floor(diffDays / 30)}개월 전`;
-  return `${Math.floor(diffDays / 365)}년 전`;
+function buildPlannerNotes(result: Omit<ResearchResult, "notesForPlanner">): string {
+  const hasForeign = result.foreignReferences.length;
+  const hasContext = result.koreanContext.length;
+  return [
+    `Raw data for researcher-planner. Mode=${result.mode}${
+      result.theme ? `, seed="${result.theme}"` : ""
+    }.`,
+    `Foreign references: ${hasForeign} English philosophy/psychology video titles — use ONLY as inspiration. NEVER translate a Korean viewer would recognize or copy a Korean title.`,
+    `Korean context signals: ${hasContext} Google Trends entries — use as "what Korean audience is currently thinking about" cultural signal, NOT as topic candidates.`,
+    `Your job: produce 10-15 original Korean philosophy/psychology topics. Each must have (a) an everyday Korean life hook, (b) academic framing, (c) a real peer-reviewed paper citation. See the 6-column table format in your agent definition.`,
+    `Reject any topic where the core angle would collide with a recognizable Korean YouTube video.`,
+  ].join("\n");
 }
 
-function generateResearchMarkdown(result: ResearchResult): string {
-  const header = `# 리서치 결과: ${result.theme || "자동 탐색"}\n\n## 주제 후보\n\n`;
-  const tableHeader = `| # | 주제 | 설명 | 출처 |\n|---|------|------|------|\n`;
-
-  const rows = result.candidates.map((c, i) =>
-    `| ${i + 1} | ${c.title.replace(/\|/g, "\\|")} | ${c.description.replace(/\|/g, "\\|")} | ${c.source} |`
-  ).join("\n");
-
-  return header + tableHeader + rows + "\n";
+/**
+ * Legacy research.md shape, kept as a placeholder until the researcher-planner
+ * subagent overwrites it with the curated 6-column Korean table.
+ */
+function placeholderMarkdown(result: ResearchResult): string {
+  return [
+    `# 리서치 raw 데이터: ${result.theme || "자동 탐색"}`,
+    ``,
+    `> 이 파일은 researcher-planner 서브에이전트가 곧 **한국어 주제 후보 6컬럼 표**로 덮어씁니다.`,
+    `> 현재는 raw-trends.json의 원시 데이터 요약만 들어있습니다.`,
+    ``,
+    `## 외국어(영어) 영상 참고 (${result.foreignReferences.length}개)`,
+    `researcher-planner가 영감용으로만 사용 — 한국어 영상 제목은 수집하지 않습니다.`,
+    ``,
+    ...result.foreignReferences.slice(0, 15).map(
+      (v, i) => `${i + 1}. ${v.title} — ${v.channelTitle}`
+    ),
+    ``,
+    `## 한국 문화 컨텍스트 (${result.koreanContext.length}개)`,
+    `시청자 공감대 파악용. 주제 후보 아님.`,
+    ``,
+    ...result.koreanContext.map((s, i) => `${i + 1}. ${s.query} (${s.kind})`),
+    ``,
+  ].join("\n");
 }
 
 async function main() {
-  const { theme, project } = parseArgs();
+  const { theme, project, language } = parseArgs();
   const startTime = Date.now();
 
-  let candidates: TopicCandidate[];
+  const foreignReferences = await collectForeignReferences(theme);
+  const koreanContext = await collectKoreanContext(theme);
 
-  if (theme) {
-    candidates = await researchWithTheme(theme);
-  } else {
-    candidates = await researchAuto();
-  }
-
-  const result: ResearchResult = {
+  const partial: Omit<ResearchResult, "notesForPlanner"> = {
     mode: theme ? "theme" : "auto",
     theme,
-    candidates,
+    language,
+    foreignReferences,
+    koreanContext,
     timestamp: new Date().toISOString(),
+  };
+  const result: ResearchResult = {
+    ...partial,
+    notesForPlanner: buildPlannerNotes(partial),
   };
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-
-  // JSON 출력 (에이전트가 파싱할 수 있도록)
   const jsonOutput = JSON.stringify(result, null, 2);
 
-  // 프로젝트 디렉토리가 지정되면 파일로도 저장
   if (project) {
     const projectDir = path.resolve(__dirname, "../../projects", project);
     if (!fs.existsSync(projectDir)) {
       fs.mkdirSync(projectDir, { recursive: true });
     }
 
-    // raw JSON 저장 (에이전트용)
-    const outputPath = path.join(projectDir, "raw-trends.json");
-    fs.writeFileSync(outputPath, jsonOutput, "utf-8");
+    fs.writeFileSync(path.join(projectDir, "raw-trends.json"), jsonOutput, "utf-8");
+    fs.writeFileSync(path.join(projectDir, "research.md"), placeholderMarkdown(result), "utf-8");
 
-    // research.md 생성 (웹 UI용)
-    const md = generateResearchMarkdown(result);
-    fs.writeFileSync(path.join(projectDir, "research.md"), md, "utf-8");
-
-    console.error(`\nSaved: ${outputPath}`);
+    console.error(`\nSaved raw-trends.json to ${projectDir}`);
   }
 
-  console.error(`\nDone! ${candidates.length} candidates collected (${elapsed}s)`);
-
-  // stdout으로 JSON 출력 (에이전트가 캡처)
+  console.error(
+    `\nDone! foreignRefs=${foreignReferences.length} koreanContext=${koreanContext.length} (${elapsed}s)`
+  );
   console.log(jsonOutput);
 }
 

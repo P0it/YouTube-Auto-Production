@@ -11,7 +11,11 @@
     "build": "tsc --noEmit",
     "generate-script": "npx tsx src/scripts/generate-script.ts",
     "fact-check": "npx tsx src/scripts/fact-check.ts",
-    "research": "npx tsx src/scripts/research.ts"
+    "research": "npx tsx src/scripts/research.ts",
+    "generate-images": "npx tsx src/scripts/generate-images.ts",
+    "generate-video-clips": "npx tsx src/scripts/generate-video-clips.ts",
+    "generate-tts": "npx tsx src/scripts/generate-tts.ts",
+    "render-video": "npx tsx src/scripts/render-video.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,15 +23,18 @@
   "description": "",
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.41.1",
+    "@google/genai": "^0.14.1",
     "@remotion/captions": "^4.0.443",
     "@remotion/cli": "^4.0.443",
     "@remotion/renderer": "^4.0.443",
+    "@types/wav": "^1.0.4",
     "dotenv": "^17.4.0",
     "google-trends-api": "^4.9.2",
     "googleapis": "^171.4.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "remotion": "^4.0.443"
+    "remotion": "^4.0.443",
+    "wav": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

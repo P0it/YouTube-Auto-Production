@@ -25,9 +25,10 @@ export const ShortformVideo: React.FC<ShortformVideoProps> = ({
         <ImageScene
           key={i}
           src={asset.assetPath}
+          type={asset.type}
           startFrame={msToFrame(asset.startMs)}
           durationFrames={msToFrame(asset.endMs - asset.startMs)}
-          animation="fadeIn"
+          effect={asset.effect}
         />
       ))}
       {subtitles.map((sub, i) => (

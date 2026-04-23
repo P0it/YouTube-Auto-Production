@@ -1,0 +1,44 @@
+{
+  "sectionStyles": {
+    "hook": {
+      "style": "cinematic",
+      "mood": "intimate, everyday moment, slightly dim, shallow depth of field",
+      "palette": "warm muted tones, soft window light"
+    },
+    "framing": {
+      "style": "cinematic",
+      "mood": "contemplative, quiet, pensive",
+      "palette": "cool muted tones, overcast daylight"
+    },
+    "analysis": {
+      "style": "illustration",
+      "mood": "minimal editorial, clean composition",
+      "palette": "limited palette, off-white background with single accent color"
+    },
+    "cases": {
+      "style": "illustration",
+      "mood": "scientific, diagrammatic, research-paper aesthetic",
+      "palette": "pale blue, grey, charcoal"
+    },
+    "deep": {
+      "style": "cinematic",
+      "mood": "symbolic, metaphorical, slightly surreal",
+      "palette": "desaturated earth tones with one symbolic accent"
+    },
+    "synthesis": {
+      "style": "illustration",
+      "mood": "abstract, unifying, thoughtful",
+      "palette": "soft gradients, cream and dusk blue"
+    },
+    "outro": {
+      "style": "cinematic",
+      "mood": "warm, inviting, open",
+      "palette": "golden hour glow"
+    }
+  },
+  "channelIdentity": {
+    "name": "philosophy-psychology",
+    "tone": "quiet intellectual, humane, curious",
+    "consistencyRule": "unified sober mood across all sections; style (cinematic vs illustration) differentiates section role"
+  }
+}

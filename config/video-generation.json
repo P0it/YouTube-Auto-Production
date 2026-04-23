@@ -1,0 +1,12 @@
+{
+  "provider": "gemini-veo",
+  "model": "veo-3.1-fast-generate-preview",
+  "aspectRatio": "16:9",
+  "resolution": "720p",
+  "durationSeconds": "4",
+  "pollIntervalMs": 10000,
+  "maxWaitMs": 360000,
+  "targetClipCount": 4,
+  "placementStrategy": "section-boundaries",
+  "sections": ["hook", "cases", "deep", "outro"]
+}
